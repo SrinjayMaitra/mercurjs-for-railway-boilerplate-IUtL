@@ -1,10 +1,8 @@
-"use client"
 import { HomeProductsCarousel } from "@/components/organisms"
 import { Product } from "@/types/product"
-import { RevealText } from "@/components/animations/RevealText"
-import { StaggerContainer } from "@/components/animations/StaggerContainer"
+import { HomeProductSectionClient } from "./HomeProductSectionClient"
 
-export const HomeProductSection = ({
+export const HomeProductSection = async ({
   heading,
   locale = process.env.NEXT_PUBLIC_DEFAULT_REGION || "pl",
   products = [],
@@ -17,20 +15,13 @@ export const HomeProductSection = ({
 }) => {
   return (
     <section className="py-8 w-full">
-      <div className="mb-6">
-        <RevealText
-          text={heading}
-          el="h2"
-          className="heading-lg font-bold tracking-tight uppercase"
-        />
-      </div>
-      <StaggerContainer>
+      <HomeProductSectionClient heading={heading}>
         <HomeProductsCarousel
           locale={locale}
           sellerProducts={products.slice(0, 4)}
           home={home}
         />
-      </StaggerContainer>
+      </HomeProductSectionClient>
     </section>
   )
 }
