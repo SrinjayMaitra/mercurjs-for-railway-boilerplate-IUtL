@@ -12,6 +12,7 @@ import { headers } from "next/headers"
 import Script from "next/script"
 import { listRegions } from "@/lib/data/regions"
 import { toHreflang } from "@/lib/helpers/hreflang"
+import { Reveal } from "@/components/animations/Reveal"
 
 export async function generateMetadata({
   params,
@@ -76,10 +77,9 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${title} | ${
-        process.env.NEXT_PUBLIC_SITE_NAME ||
+      title: `${title} | ${process.env.NEXT_PUBLIC_SITE_NAME ||
         "Mercur B2C Demo - Marketplace Storefront"
-      }`,
+        }`,
       description,
       url: canonical,
       siteName:
@@ -174,15 +174,29 @@ export default async function Home({
           },
         ]}
       />
-      <div className="px-4 lg:px-8 w-full">
-        <HomeProductSection heading="trending listings" locale={locale} home />
-      </div>
-      <div className="px-4 lg:px-8 w-full">
-        <HomeCategories heading="SHOP BY CATEGORY" />
-      </div>
-      <BannerSection />
-      <ShopByStyleSection />
-      <BlogSection />
+      <Reveal width="100%" variant="fade-up" delay={0.2}>
+        <div className="px-4 lg:px-8 w-full">
+          <HomeProductSection heading="trending listings" locale={locale} home />
+        </div>
+      </Reveal>
+
+      <Reveal width="100%" variant="fade-up" delay={0.2}>
+        <div className="px-4 lg:px-8 w-full">
+          <HomeCategories heading="SHOP BY CATEGORY" />
+        </div>
+      </Reveal>
+
+      <Reveal width="100%" variant="fade-in" delay={0.2}>
+        <BannerSection />
+      </Reveal>
+
+      <Reveal width="100%" variant="fade-up" delay={0.2}>
+        <ShopByStyleSection />
+      </Reveal>
+
+      <Reveal width="100%" variant="fade-up" delay={0.2}>
+        <BlogSection />
+      </Reveal>
     </main>
   )
 }

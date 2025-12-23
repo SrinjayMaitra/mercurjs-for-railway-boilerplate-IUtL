@@ -5,6 +5,7 @@ import { Toaster } from "@medusajs/ui"
 import Head from "next/head"
 import { retrieveCart } from "@/lib/data/cart"
 import { Providers } from "./providers"
+import { SmoothScroll } from "@/components/animations/SmoothScroll"
 
 const funnelDisplay = Funnel_Display({
   variable: "--font-funnel-sans",
@@ -14,10 +15,9 @@ const funnelDisplay = Funnel_Display({
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | ${
-      process.env.NEXT_PUBLIC_SITE_NAME ||
+    template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME ||
       "Mercur B2C Demo - Marketplace Storefront"
-    }`,
+      }`,
     default:
       process.env.NEXT_PUBLIC_SITE_NAME ||
       "Mercur B2C Demo - Marketplace Storefront",
@@ -120,7 +120,9 @@ export default async function RootLayout({
       <body
         className={`${funnelDisplay.className} antialiased bg-primary text-secondary relative`}
       >
-        <Providers cart={cart}>{children}</Providers>
+        <Providers cart={cart}>
+          <SmoothScroll>{children}</SmoothScroll>
+        </Providers>
         <Toaster position="top-right" />
       </body>
     </html>
