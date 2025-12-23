@@ -44,18 +44,29 @@ export const ProductListing = async ({
       <div className="hidden md:block mt-4">
         <ProductListingActiveFilters />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-4 mt-8 gap-8">
-        {showSidebar && (
-          <aside className="lg:col-span-1">
-            <ProductSidebar />
-          </aside>
-        )}
-        <section className={showSidebar ? "lg:col-span-3" : "col-span-4"}>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <ProductsList products={products} />
+      <div className="mt-8">
+        {showSidebar ? (
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <aside className="lg:col-span-1 hidden lg:block">
+              <div className="sticky top-24">
+                <ProductSidebar />
+              </div>
+            </aside>
+            <section className="lg:col-span-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
+                <ProductsList products={products} />
+              </div>
+              <ProductsPagination pages={pages} />
+            </section>
           </div>
-          <ProductsPagination pages={pages} />
-        </section>
+        ) : (
+          <section>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
+              <ProductsList products={products} />
+            </div>
+            <ProductsPagination pages={pages} />
+          </section>
+        )}
       </div>
     </div>
   )

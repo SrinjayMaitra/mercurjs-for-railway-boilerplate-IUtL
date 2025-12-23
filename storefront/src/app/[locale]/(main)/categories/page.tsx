@@ -152,7 +152,7 @@ async function AllCategories({
 
       <Suspense fallback={<ProductListingSkeleton />}>
         {bot || !ALGOLIA_ID || !ALGOLIA_SEARCH_KEY ? (
-          <ProductListing showSidebar locale={locale} />
+          <ProductListing locale={locale} />
         ) : (
           <AlgoliaProductsListing
             locale={locale}

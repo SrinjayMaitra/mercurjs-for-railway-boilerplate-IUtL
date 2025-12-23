@@ -4,7 +4,6 @@ import Image from "next/image"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useRef } from "react"
 
-import tailwindConfig from "../../../../tailwind.config"
 import { ArrowRightIcon } from "@/icons"
 import Link from "next/link"
 import { Reveal } from "@/components/animations/Reveal"
@@ -32,81 +31,116 @@ export const Hero = ({ image, heading, paragraph, buttons }: HeroProps) => {
   return (
     <section
       ref={ref}
-      className="w-full flex container mt-5 flex-col lg:flex-row text-primary relative"
+      className="w-full min-h-[90vh] lg:min-h-screen relative overflow-hidden"
     >
-      <div className="w-full order-2 lg:order-1 relative overflow-hidden rounded-sm">
-        <motion.div style={{ y, scale, opacity }} className="relative w-full h-full origin-top">
-          <Image
-            src={decodeURIComponent(image)}
-            width={700}
-            height={600}
-            alt={`Hero banner - ${heading}`}
-            className="w-full h-auto object-cover"
-            priority
-            fetchPriority="high"
-            quality={90}
-            sizes="(min-width: 1024px) 50vw, 100vw"
-          />
-        </motion.div>
-      </div>
+      {/* Background Image with Parallax */}
+      <motion.div
+        style={{ y, scale, opacity }}
+        className="absolute inset-0 w-full h-full"
+      >
+        <Image
+          src={decodeURIComponent(image)}
+          fill
+          alt={`Hero banner - ${heading}`}
+          className="object-cover"
+          priority
+          fetchPriority="high"
+          quality={90}
+          sizes="100vw"
+        />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      </motion.div>
 
-      <div className="w-full lg:order-2 flex flex-col gap-0 z-10">
-        <div className="border rounded-sm w-full px-6 flex items-end min-h-[400px] lg:h-[calc(100%-144px)] bg-primary">
-          <div className="py-8">
+      {/* Content */}
+      <div className="relative z-10 h-full min-h-[90vh] lg:min-h-screen flex items-center">
+        <div className="max-w-[1400px] mx-auto px-4 lg:px-8 py-20 lg:py-32 w-full">
+          <div className="max-w-2xl">
+            {/* Accent Tag */}
+            <Reveal variant="fade-up" delay={0.1}>
+              <span className="inline-block px-4 py-2 bg-[#d2ff1f] text-black text-sm font-semibold rounded-full mb-6">
+                New Collection 2025
+              </span>
+            </Reveal>
+
+            {/* Heading */}
             <RevealText
               text={heading}
-              el="h2"
-              className="font-bold mb-6 uppercase display-md max-w-[652px] text-4xl md:text-5xl leading-tight"
+              el="h1"
+              className="font-bold mb-6 uppercase text-white text-4xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight"
             />
+
+            {/* Paragraph */}
             <Reveal variant="fade-up" delay={0.4}>
-              <p className="text-lg mb-8 max-w-md">{paragraph}</p>
+              <p className="text-lg md:text-xl text-white/90 mb-10 max-w-lg leading-relaxed">
+                {paragraph}
+              </p>
+            </Reveal>
+
+            {/* Buttons */}
+            <Reveal variant="fade-up" delay={0.5}>
+              <div className="flex flex-wrap gap-4">
+                {buttons.map(({ label, path }, index) => (
+                  <motion.div
+                    key={path}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + (index * 0.1), duration: 0.5 }}
+                  >
+                    <Link
+                      href={path}
+                      className={`group inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base transition-all duration-300 ${
+                        index === 0
+                          ? "bg-[#d2ff1f] text-black hover:bg-[#c4f018] hover:scale-105"
+                          : "bg-white/10 backdrop-blur-sm text-white border border-white/30 hover:bg-white hover:text-black"
+                      }`}
+                      aria-label={label}
+                      title={label}
+                    >
+                      {label}
+                      <ArrowRightIcon
+                        className={`w-5 h-5 transition-transform duration-300 group-hover:translate-x-1 ${
+                          index === 0 ? "text-black" : ""
+                        }`}
+                      />
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </Reveal>
+
+            {/* Stats */}
+            <Reveal variant="fade-up" delay={0.7}>
+              <div className="flex gap-8 mt-12 pt-8 border-t border-white/20">
+                <div>
+                  <p className="text-3xl md:text-4xl font-bold text-[#d2ff1f]">10K+</p>
+                  <p className="text-white/70 text-sm mt-1">Active Sellers</p>
+                </div>
+                <div>
+                  <p className="text-3xl md:text-4xl font-bold text-[#35b9e9]">50K+</p>
+                  <p className="text-white/70 text-sm mt-1">Products Listed</p>
+                </div>
+                <div>
+                  <p className="text-3xl md:text-4xl font-bold text-white">98%</p>
+                  <p className="text-white/70 text-sm mt-1">Happy Customers</p>
+                </div>
+              </div>
             </Reveal>
           </div>
         </div>
-        {buttons.length && (
-          <div className="h-[72px] lg:h-[144px] flex font-bold uppercase">
-            {buttons.map(({ label, path }, index) => (
-              <motion.div
-                key={path}
-                className="w-1/2 h-full"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + (index * 0.1), duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-              >
-                <Link
-                  href={path}
-                  className="group flex border rounded-sm h-full w-full bg-content hover:bg-action hover:text-tertiary transition-all duration-300 p-6 justify-between items-end relative overflow-hidden"
-                  aria-label={label}
-                  title={label}
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-action z-0"
-                    initial={{ scaleY: 0 }}
-                    whileHover={{ scaleY: 1 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    style={{ originY: 1 }}
-                  />
-
-                  <span className="relative z-10 overflow-hidden mix-blend-exclusion text-primary group-hover:text-tertiary">
-                    <span className="block group-hover:-translate-y-[150%] transition-transform duration-300">
-                      {label}
-                    </span>
-                    <span className="absolute top-0 left-0 translate-y-[150%] group-hover:translate-y-0 transition-transform duration-300 block">
-                      {label}
-                    </span>
-                  </span>
-
-                  <ArrowRightIcon
-                    color={tailwindConfig.theme.extend.backgroundColor.primary}
-                    aria-hidden
-                    className="group-hover:translate-x-1 transition-transform duration-300 relative z-10 group-hover:brightness-0 group-hover:invert"
-                  />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        )}
       </div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 2, repeat: Infinity }}
+      >
+        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center pt-2">
+          <div className="w-1.5 h-3 bg-[#d2ff1f] rounded-full" />
+        </div>
+      </motion.div>
     </section>
   )
 }

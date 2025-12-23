@@ -9,6 +9,7 @@ type DummyProduct = {
   handle: string
   thumbnail: string
   price: string
+  originalPrice?: string
 }
 
 export const DummyProductCard = ({
@@ -16,6 +17,8 @@ export const DummyProductCard = ({
 }: {
   product: DummyProduct
 }) => {
+  const hasDiscount = product.originalPrice && product.originalPrice !== product.price
+
   return (
     <div className="block cursor-pointer">
       <div
@@ -25,7 +28,7 @@ export const DummyProductCard = ({
         )}
       >
         {/* Image Container */}
-        <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg bg-neutral-100">
+        <div className="relative w-full aspect-[4/5] overflow-hidden rounded-xl bg-neutral-100 shadow-sm group-hover:shadow-card transition-shadow duration-300">
           <Image
             src={product.thumbnail}
             alt={`${product.title} image`}
@@ -35,29 +38,46 @@ export const DummyProductCard = ({
           />
 
           {/* Quick View Overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-end justify-center pb-4 opacity-0 group-hover:opacity-100">
-            <span className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-5">
+            <span className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg hover:bg-black hover:text-white">
               Quick View
             </span>
           </div>
 
+          {/* Sale Badge */}
+          {hasDiscount && (
+            <div className="absolute top-3 right-3">
+              <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                Sale
+              </span>
+            </div>
+          )}
+
           {/* Demo Badge */}
           <div className="absolute top-3 left-3">
-            <span className="bg-black/70 text-white px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-black/80 text-white px-3 py-1.5 rounded-full text-[11px] font-medium tracking-wide uppercase">
               Demo
             </span>
           </div>
         </div>
 
         {/* Product Info */}
-        <div className="pt-4 space-y-1">
-          <h3 className="text-[15px] font-medium text-primary leading-tight line-clamp-2 group-hover:text-secondary transition-colors duration-200">
+        <div className="pt-4 space-y-1.5">
+          <h3 className="text-[15px] font-medium text-primary leading-snug line-clamp-2 group-hover:text-secondary transition-colors duration-200">
             {product.title}
           </h3>
           <div className="flex items-center gap-2">
-            <p className="text-[15px] font-semibold text-primary">
+            <p className={clsx(
+              "text-[15px] font-semibold",
+              hasDiscount ? "text-red-600" : "text-primary"
+            )}>
               {product.price}
             </p>
+            {hasDiscount && (
+              <p className="text-sm text-secondary line-through">
+                {product.originalPrice}
+              </p>
+            )}
           </div>
         </div>
       </div>

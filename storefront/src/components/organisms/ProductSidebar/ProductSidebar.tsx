@@ -19,6 +19,12 @@ export const ProductSidebar = () => {
 
   return (
     <aside className="w-full relative">
+      {/* Sidebar Header - Desktop */}
+      <div className="hidden md:block mb-6">
+        <h3 className="text-lg font-semibold text-primary">Filters</h3>
+        <p className="text-sm text-secondary mt-1">Refine your search</p>
+      </div>
+
       <div
         className={cn(
           "md:relative w-full h-full bg-primary top-0 left-0 transition-opacity duration-100",
@@ -33,7 +39,7 @@ export const ProductSidebar = () => {
               <h3 className="uppercase heading-md">Filters</h3>
               <div
                 onClick={() => setFilterModal(false)}
-                className="cursor-pointer"
+                className="cursor-pointer hover:opacity-70 transition-opacity"
               >
                 <CloseIcon size={20} />
               </div>
@@ -44,7 +50,7 @@ export const ProductSidebar = () => {
           </div>
         )}
 
-        <div className="px-2 md:px-0 overflow-y-scroll md:overflow-y-auto h-[calc(100vh-200px)] md:h-full no-scrollbar">
+        <div className="px-2 md:px-0 overflow-y-scroll md:overflow-y-auto h-[calc(100vh-200px)] md:h-full no-scrollbar space-y-2">
           <PriceFilter />
           <SizeFilter />
           <ColorFilter />
@@ -62,7 +68,7 @@ export const ProductSidebar = () => {
             className="w-1/2 uppercase label-sm"
             onClick={() => setFilterModal(false)}
           >
-            View 222 listings
+            View listings
           </Button>
         </div>
       </div>

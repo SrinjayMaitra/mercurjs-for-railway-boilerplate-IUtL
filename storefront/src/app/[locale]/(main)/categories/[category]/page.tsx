@@ -171,7 +171,7 @@ async function Category({
 
       <Suspense fallback={<ProductListingSkeleton />}>
         {bot || !ALGOLIA_ID || !ALGOLIA_SEARCH_KEY ? (
-          <ProductListing category_id={category.id} showSidebar />
+          <ProductListing category_id={category.id} />
         ) : (
           <AlgoliaProductsListing
             category_id={category.id}
