@@ -1,5 +1,8 @@
+"use client"
 import { BlogPost } from '@/types/blog';
 import { BlogCard } from '@/components/organisms';
+import { RevealText } from "@/components/animations/RevealText"
+import { StaggerContainer, StaggerItem } from "@/components/animations/StaggerContainer"
 
 export const blogPosts: BlogPost[] = [
   {
@@ -35,19 +38,22 @@ export function BlogSection() {
   return (
     <section className='bg-tertiary container'>
       <div className='flex items-center justify-between mb-12'>
-        <h2 className='heading-lg text-tertiary'>
-          STAY UP TO DATE
-        </h2>
+        <RevealText
+          text="STAY UP TO DATE"
+          el="h2"
+          className="heading-lg text-tertiary"
+        />
       </div>
-      <div className='grid grid-cols-1 lg:grid-cols-3'>
+      <StaggerContainer className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
         {blogPosts.map((post, index) => (
-          <BlogCard
-            key={post.id}
-            index={index}
-            post={post}
-          />
+          <StaggerItem key={post.id} variant="fade-up">
+            <BlogCard
+              index={index}
+              post={post}
+            />
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
     </section>
   );
 }

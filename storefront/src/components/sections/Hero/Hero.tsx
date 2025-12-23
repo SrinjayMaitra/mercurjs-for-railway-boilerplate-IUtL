@@ -8,6 +8,7 @@ import tailwindConfig from "../../../../tailwind.config"
 import { ArrowRightIcon } from "@/icons"
 import Link from "next/link"
 import { Reveal } from "@/components/animations/Reveal"
+import { RevealText } from "@/components/animations/RevealText"
 
 type HeroProps = {
   image: string
@@ -23,9 +24,10 @@ export const Hero = ({ image, heading, paragraph, buttons }: HeroProps) => {
     offset: ["start start", "end start"],
   })
 
-  // Parallax effect for the image
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"])
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.5])
+  // Enhanced Parallax & Scale effect
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
 
   return (
     <section
@@ -33,7 +35,7 @@ export const Hero = ({ image, heading, paragraph, buttons }: HeroProps) => {
       className="w-full flex container mt-5 flex-col lg:flex-row text-primary relative"
     >
       <div className="w-full order-2 lg:order-1 relative overflow-hidden rounded-sm">
-        <motion.div style={{ y, opacity }} className="relative w-full h-full">
+        <motion.div style={{ y, scale, opacity }} className="relative w-full h-full origin-top">
           <Image
             src={decodeURIComponent(image)}
             width={700}
@@ -42,7 +44,7 @@ export const Hero = ({ image, heading, paragraph, buttons }: HeroProps) => {
             className="w-full h-auto object-cover"
             priority
             fetchPriority="high"
-            quality={80}
+            quality={90}
             sizes="(min-width: 1024px) 50vw, 100vw"
           />
         </motion.div>
@@ -51,12 +53,12 @@ export const Hero = ({ image, heading, paragraph, buttons }: HeroProps) => {
       <div className="w-full lg:order-2 flex flex-col gap-0 z-10">
         <div className="border rounded-sm w-full px-6 flex items-end min-h-[400px] lg:h-[calc(100%-144px)] bg-primary">
           <div className="py-8">
-            <Reveal variant="fade-up" delay={0.2}>
-              <h2 className="font-bold mb-6 uppercase display-md max-w-[652px] text-4xl md:text-5xl leading-tight">
-                {heading}
-              </h2>
-            </Reveal>
-            <Reveal variant="fade-up" delay={0.3}>
+            <RevealText
+              text={heading}
+              el="h2"
+              className="font-bold mb-6 uppercase display-md max-w-[652px] text-4xl md:text-5xl leading-tight"
+            />
+            <Reveal variant="fade-up" delay={0.4}>
               <p className="text-lg mb-8 max-w-md">{paragraph}</p>
             </Reveal>
           </div>
@@ -67,17 +69,25 @@ export const Hero = ({ image, heading, paragraph, buttons }: HeroProps) => {
               <motion.div
                 key={path}
                 className="w-1/2 h-full"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + (index * 0.1), duration: 0.5 }}
+                transition={{ delay: 0.6 + (index * 0.1), duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
               >
                 <Link
                   href={path}
-                  className="group flex border rounded-sm h-full w-full bg-content hover:bg-action hover:text-tertiary transition-all duration-300 p-6 justify-between items-end"
+                  className="group flex border rounded-sm h-full w-full bg-content hover:bg-action hover:text-tertiary transition-all duration-300 p-6 justify-between items-end relative overflow-hidden"
                   aria-label={label}
                   title={label}
                 >
-                  <span className="relative overflow-hidden">
+                  <motion.div
+                    className="absolute inset-0 bg-action z-0"
+                    initial={{ scaleY: 0 }}
+                    whileHover={{ scaleY: 1 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    style={{ originY: 1 }}
+                  />
+
+                  <span className="relative z-10 overflow-hidden mix-blend-exclusion text-primary group-hover:text-tertiary">
                     <span className="block group-hover:-translate-y-[150%] transition-transform duration-300">
                       {label}
                     </span>
@@ -89,7 +99,7 @@ export const Hero = ({ image, heading, paragraph, buttons }: HeroProps) => {
                   <ArrowRightIcon
                     color={tailwindConfig.theme.extend.backgroundColor.primary}
                     aria-hidden
-                    className="group-hover:translate-x-1 transition-transform duration-300"
+                    className="group-hover:translate-x-1 transition-transform duration-300 relative z-10 group-hover:brightness-0 group-hover:invert"
                   />
                 </Link>
               </motion.div>

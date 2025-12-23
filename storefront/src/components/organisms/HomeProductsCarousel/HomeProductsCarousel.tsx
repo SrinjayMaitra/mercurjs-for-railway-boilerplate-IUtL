@@ -4,6 +4,7 @@ import { listProducts } from "@/lib/data/products"
 import { Product } from "@/types/product"
 import { HttpTypes } from "@medusajs/types"
 import { getProductPrice } from "@/lib/helpers/get-product-price"
+import { StaggerItem } from "@/components/animations/StaggerContainer"
 
 export const HomeProductsCarousel = async ({
   locale,
@@ -36,13 +37,13 @@ export const HomeProductsCarousel = async ({
         align="start"
         items={(sellerProducts.length ? sellerProducts : products).map(
           (product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              api_product={
-                home
-                  ? (product as HttpTypes.StoreProduct)
-                  : products.find((p) => {
+            <StaggerItem key={product.id} variant="fade-up" className="h-full">
+              <ProductCard
+                product={product}
+                api_product={
+                  home
+                    ? (product as HttpTypes.StoreProduct)
+                    : products.find((p) => {
                       const { cheapestPrice } = getProductPrice({
                         product: p,
                       })
@@ -52,8 +53,9 @@ export const HomeProductsCarousel = async ({
                         Boolean(cheapestPrice)
                       )
                     })
-              }
-            />
+                }
+              />
+            </StaggerItem>
           )
         )}
       />

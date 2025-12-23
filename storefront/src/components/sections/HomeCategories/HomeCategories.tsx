@@ -1,5 +1,8 @@
+"use client"
 import { Carousel } from "@/components/cells"
 import { CategoryCard } from "@/components/organisms"
+import { StaggerContainer, StaggerItem } from "@/components/animations/StaggerContainer"
+import { RevealText } from "@/components/animations/RevealText"
 
 export const categories: { id: number; name: string; handle: string }[] = [
   {
@@ -29,17 +32,25 @@ export const categories: { id: number; name: string; handle: string }[] = [
   },
 ]
 
-export const HomeCategories = async ({ heading }: { heading: string }) => {
+export const HomeCategories = ({ heading }: { heading: string }) => {
   return (
     <section className="bg-primary py-8 w-full">
       <div className="mb-6">
-        <h2 className="heading-lg text-primary uppercase">{heading}</h2>
+        <RevealText
+          text={heading}
+          el="h2"
+          className="heading-lg text-primary uppercase"
+        />
       </div>
-      <Carousel
-        items={categories?.map((category) => (
-          <CategoryCard key={category.id} category={category} />
-        ))}
-      />
+      <StaggerContainer>
+        <Carousel
+          items={categories?.map((category) => (
+            <StaggerItem key={category.id} variant="scale-up" className="h-full">
+              <CategoryCard category={category} />
+            </StaggerItem>
+          ))}
+        />
+      </StaggerContainer>
     </section>
   )
 }
