@@ -107,7 +107,7 @@ async function AllCategories({
   }))
 
   return (
-    <main className="container">
+    <main className="max-w-[1400px] mx-auto px-4 lg:px-8 py-6 lg:py-8">
       <Script
         id="ld-breadcrumbs-categories"
         type="application/ld+json"
@@ -137,11 +137,18 @@ async function AllCategories({
           }),
         }}
       />
-      <div className="hidden md:block mb-2">
+      <div className="hidden md:block mb-4">
         <Breadcrumbs items={breadcrumbsItems} />
       </div>
 
-      <h1 className="heading-xl uppercase">All Products</h1>
+      <div className="mb-8">
+        <h1 className="text-3xl lg:text-4xl font-semibold text-primary tracking-tight">
+          All Products
+        </h1>
+        <p className="text-secondary mt-2">
+          Discover our curated collection of premium products
+        </p>
+      </div>
 
       <Suspense fallback={<ProductListingSkeleton />}>
         {bot || !ALGOLIA_ID || !ALGOLIA_SEARCH_KEY ? (

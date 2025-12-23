@@ -126,7 +126,7 @@ async function Category({
   }))
 
   return (
-    <main className="container">
+    <main className="max-w-[1400px] mx-auto px-4 lg:px-8 py-6 lg:py-8">
       <Script
         id="ld-breadcrumbs-category"
         type="application/ld+json"
@@ -156,11 +156,18 @@ async function Category({
           }),
         }}
       />
-      <div className="hidden md:block mb-2">
+      <div className="hidden md:block mb-4">
         <Breadcrumbs items={breadcrumbsItems} />
       </div>
 
-      <h1 className="heading-xl uppercase">{category.name}</h1>
+      <div className="mb-8">
+        <h1 className="text-3xl lg:text-4xl font-semibold text-primary tracking-tight">
+          {category.name}
+        </h1>
+        <p className="text-secondary mt-2">
+          Browse our {category.name?.toLowerCase()} collection
+        </p>
+      </div>
 
       <Suspense fallback={<ProductListingSkeleton />}>
         {bot || !ALGOLIA_ID || !ALGOLIA_SEARCH_KEY ? (

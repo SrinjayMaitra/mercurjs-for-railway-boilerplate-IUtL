@@ -125,14 +125,24 @@ export default {
       },
       borderRadius: {
         xs: "4px",
-        sm: "8px",
+        sm: "12px",
         md: "16px",
+        lg: "20px",
+        xl: "24px",
         full: "1000px",
       },
       fill: {
         primary: "rgba(var(--content-action-on-primary))",
         secondary: "rgba(var(--content-action-on-secondary))",
         disabled: "rgba(var(--content-disabled))",
+      },
+      boxShadow: {
+        'card': '0 4px 20px rgba(0, 0, 0, 0.08)',
+        'card-hover': '0 8px 30px rgba(0, 0, 0, 0.12)',
+        'soft': '0 2px 10px rgba(0, 0, 0, 0.05)',
+      },
+      transitionDuration: {
+        '400': '400ms',
       },
     },
   },

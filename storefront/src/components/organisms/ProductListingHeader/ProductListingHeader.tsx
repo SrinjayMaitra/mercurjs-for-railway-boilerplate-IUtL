@@ -18,16 +18,18 @@ export const ProductListingHeader = ({ total }: { total: number }) => {
   }
 
   return (
-    <div className="flex justify-between w-full items-center">
-      <div>{total} listings</div>
-      {/* <div className='hidden md:flex gap-2 items-center'>
-        Sort by:{' '}
+    <div className="flex justify-between w-full items-center py-2">
+      <p className="text-secondary text-[15px]">
+        <span className="font-medium text-primary">{total}</span> listings
+      </p>
+      <div className="hidden md:flex gap-2 items-center">
+        <span className="text-secondary text-sm">Sort by:</span>
         <SelectField
-          className='min-w-[200px]'
+          className="min-w-[180px]"
           options={selectOptions}
           selectOption={selectOptionHandler}
         />
-      </div> */}
+      </div>
     </div>
   )
 }
