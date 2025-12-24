@@ -12,6 +12,7 @@ import { ProductDetailsPage } from "./ProductDetailsPage/ProductDetailsPage"
 import { AlgoliaProductsListing } from "./ProductListing/AlgoliaProductsListing"
 import { OrdersPagination } from "../organisms/OrdersPagination/OrdersPagination"
 import { ReviewSection } from "./ReviewSection/ReviewSection"
+import { ScrollingBanner } from "./ScrollingBanner/ScrollingBanner"
 
 export {
   Hero,
@@ -28,4 +29,5 @@ export {
   AlgoliaProductsListing,
   OrdersPagination,
   ReviewSection,
+  ScrollingBanner,
 }

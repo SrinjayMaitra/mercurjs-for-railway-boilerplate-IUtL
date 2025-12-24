@@ -151,3 +151,17 @@ button:disabled svg path {
 .no-arrows-number-input {
   -moz-appearance: textfield;
 }
+
+/* Scrolling Banner Animation */
+@keyframes scroll-banner {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.scroll-banner {
+  animation: scroll-banner 25s linear infinite;
+}

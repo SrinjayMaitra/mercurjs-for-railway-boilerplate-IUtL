@@ -6,6 +6,7 @@ import {
   HomeProductSection,
   ShopByStyleSection,
   ReviewSection,
+  ScrollingBanner,
 } from "@/components/sections"
 
 import type { Metadata } from "next"
@@ -161,6 +162,8 @@ export default async function Home({
         }}
       />
 
+      <ScrollingBanner />
+      
       <Hero
         image="/images/hero/Image.jpg"
         heading="Snag your style in a flash"
