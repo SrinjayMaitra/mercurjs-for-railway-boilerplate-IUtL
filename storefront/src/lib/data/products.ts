@@ -72,11 +72,12 @@ export const listProducts = async ({
       method: "GET",
       query: {
         country_code: countryCode,
-        category_id,
+        category_id: category_id ? [category_id] : undefined,
         collection_id,
         limit,
         offset,
         region_id: region?.id,
+        include_category_children: category_id ? true : undefined,
         fields:
           "*variants.calculated_price,+variants.inventory_quantity,*seller,*variants,*seller.products," +
           "*seller.reviews,*seller.reviews.customer,*seller.reviews.seller,*seller.products.variants,*attribute_values,*attribute_values.attribute",
@@ -87,26 +88,27 @@ export const listProducts = async ({
       cache: useCached ? "force-cache" : "no-cache",
     })
     .then(({ products: productsRaw, count }) => {
+      // Filter out suspended sellers, but keep products without sellers
       const products = productsRaw.filter(
-        (product) => product.seller?.store_status !== "SUSPENDED"
+        (product) => !product.seller || product.seller?.store_status !== "SUSPENDED"
       )
 
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
-      const response = products.filter((prod) => {
-        // @ts-ignore Property 'seller' exists but TypeScript doesn't recognize it
-        const reviews = prod.seller?.reviews.filter((item) => !!item) ?? []
-        return (
+      // Process products - include all products, not just those with sellers
+      const response = products.map((prod) => {
+        if (prod?.seller) {
           // @ts-ignore Property 'seller' exists but TypeScript doesn't recognize it
-          prod?.seller && {
+          const reviews = prod.seller?.reviews?.filter((item) => !!item) ?? []
+          return {
             ...prod,
             seller: {
-              // @ts-ignore Property 'seller' exists but TypeScript doesn't recognize it
               ...prod.seller,
               reviews,
             },
           }
-        )
+        }
+        return prod
       })
 
       return {
@@ -177,9 +179,18 @@ export const listProductsWithSort = async ({
     ? products.filter((product) => product.seller?.id === seller_id)
     : products
 
-  const pricedProducts = filteredProducts.filter((prod) =>
-    prod.variants?.some((variant) => variant.calculated_price !== null)
-  )
+  // Include products with prices, but also include products without variants/prices for display
+  const pricedProducts = filteredProducts.filter((prod) => {
+    // If product has variants with calculated prices, include it
+    if (prod.variants?.some((variant) => variant.calculated_price !== null)) {
+      return true
+    }
+    // Also include products that have variants but might not have prices calculated yet
+    if (prod.variants && prod.variants.length > 0) {
+      return true
+    }
+    return false
+  })
 
   const sortedProducts = sortProducts(pricedProducts, sortBy)
 
