@@ -10,7 +10,7 @@ export const CartItems = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
     <div key={key} className="mb-4">
       <CartItemsHeader seller={groupedItems[key]?.seller} />
       <CartItemsProducts
-        delete_item={false}
+        delete_item={true}
         products={groupedItems[key].items || []}
         currency_code={cart.currency_code}
       />
