@@ -35,6 +35,8 @@ export const HomeProductsCarousel = async ({
     <div className="w-full">
       <Carousel
         align="start"
+        autoScroll={true}
+        autoScrollDelay={3000}
         items={(sellerProducts.length ? sellerProducts : products).map(
           (product) => (
             <StaggerItem

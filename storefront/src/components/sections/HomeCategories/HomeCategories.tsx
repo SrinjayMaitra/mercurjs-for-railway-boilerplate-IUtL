@@ -58,6 +58,8 @@ export const HomeCategories = ({ heading }: { heading: string }) => {
         </div>
         <StaggerContainer>
           <Carousel
+            autoScroll={true}
+            autoScrollDelay={2500}
             items={categories?.map((category) => (
               <StaggerItem key={category.id} variant="scale-up" className="h-full">
                 <CategoryCard category={category} />

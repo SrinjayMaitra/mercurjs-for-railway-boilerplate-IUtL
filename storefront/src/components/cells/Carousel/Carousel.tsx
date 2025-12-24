@@ -1,10 +1,11 @@
 "use client"
 
 import useEmblaCarousel from "embla-carousel-react"
+import Autoplay from "embla-carousel-autoplay"
 
 import { Indicator } from "@/components/atoms"
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useRef } from "react"
 import { EmblaCarouselType } from "embla-carousel"
 import tailwindConfig from "../../../../tailwind.config"
 
@@ -12,15 +13,31 @@ export const CustomCarousel = ({
   variant = "light",
   items,
   align = "start",
+  autoScroll = false,
+  autoScrollDelay = 3000,
 }: {
   variant?: "light" | "dark"
   items: React.ReactNode[]
   align?: "center" | "start" | "end"
+  autoScroll?: boolean
+  autoScrollDelay?: number
 }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align,
-  })
+  const autoplayPlugin = useRef(
+    Autoplay({
+      delay: autoScrollDelay,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+    })
+  )
+
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      align,
+      dragFree: autoScroll,
+    },
+    autoScroll ? [autoplayPlugin.current] : []
+  )
 
   const [selectedIndex, setSelectedIndex] = useState(0)
 
