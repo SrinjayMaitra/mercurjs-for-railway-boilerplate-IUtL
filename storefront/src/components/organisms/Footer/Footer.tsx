@@ -160,25 +160,67 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar */}
+      {/* Bottom Bar with Copyright and Payment */}
       <div className="border-t border-white/10">
         <div className="max-w-[1400px] mx-auto px-4 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-white/40">
-              © {new Date().getFullYear()} ELARO. All rights reserved.
+              © {new Date().getFullYear()} Elaro. All Rights Reserved
             </p>
-            <div className="flex gap-6">
-              <a href="#" className="text-sm text-white/40 hover:text-white transition-colors duration-200">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-sm text-white/40 hover:text-white transition-colors duration-200">
-                Terms of Service
-              </a>
-              <a href="#" className="text-sm text-white/40 hover:text-white transition-colors duration-200">
-                Cookies
-              </a>
+            {/* Payment Icons */}
+            <div className="flex items-center gap-2">
+              {/* Amex */}
+              <div className="w-10 h-6 bg-[#006FCF] rounded flex items-center justify-center">
+                <span className="text-white text-[8px] font-bold">AMEX</span>
+              </div>
+              {/* Apple Pay */}
+              <div className="w-10 h-6 bg-black border border-white/20 rounded flex items-center justify-center">
+                <svg className="w-6 h-4" viewBox="0 0 24 16" fill="white">
+                  <path d="M4.5 12.5c-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7V4.5c0-.3.1-.5.3-.7.2-.2.4-.3.7-.3h15c.3 0 .5.1.7.3.2.2.3.4.3.7v7c0 .3-.1.5-.3.7-.2.2-.4.3-.7.3h-15z"/>
+                  <text x="6" y="10" fontSize="5" fill="black" fontWeight="bold">Pay</text>
+                </svg>
+              </div>
+              {/* Google Pay */}
+              <div className="w-10 h-6 bg-white rounded flex items-center justify-center">
+                <span className="text-[8px] font-semibold text-gray-700">GPay</span>
+              </div>
+              {/* Maestro */}
+              <div className="w-10 h-6 bg-white rounded flex items-center justify-center overflow-hidden">
+                <div className="flex">
+                  <div className="w-3 h-3 rounded-full bg-[#CC0000]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#0099DD] -ml-1"></div>
+                </div>
+              </div>
+              {/* Mastercard */}
+              <div className="w-10 h-6 bg-[#1A1F71] rounded flex items-center justify-center overflow-hidden">
+                <div className="flex">
+                  <div className="w-3 h-3 rounded-full bg-[#EB001B]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#F79E1B] -ml-1"></div>
+                </div>
+              </div>
+              {/* PayPal */}
+              <div className="w-10 h-6 bg-white rounded flex items-center justify-center">
+                <span className="text-[8px] font-bold text-[#003087]">Pay</span>
+                <span className="text-[8px] font-bold text-[#009CDE]">Pal</span>
+              </div>
+              {/* Visa */}
+              <div className="w-10 h-6 bg-white rounded flex items-center justify-center">
+                <span className="text-[10px] font-bold text-[#1A1F71] italic">VISA</span>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Giant Brand Section - Nivest Style */}
+      <div className="bg-[#d2ff1f] overflow-hidden">
+        <div className="py-8 md:py-12 lg:py-16">
+          <h2
+            className="text-[15vw] md:text-[18vw] lg:text-[20vw] font-black text-black leading-[0.85] tracking-tight text-center select-none"
+            style={{ fontFamily: 'Arial Black, Arial, sans-serif' }}
+          >
+            Elaro<sup className="text-[4vw] md:text-[5vw] align-super">®</sup>
+          </h2>
         </div>
       </div>
     </footer>
