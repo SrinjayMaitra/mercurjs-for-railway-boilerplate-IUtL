@@ -110,10 +110,13 @@ export const listProducts = async ({
         )
       })
 
+      // Adjust count to match filtered products (products without sellers are filtered out)
+      const filteredCount = response.length
+
       return {
         response: {
           products: response,
-          count,
+          count: filteredCount,
         },
         nextPage: nextPage,
         queryParams,
@@ -186,14 +189,16 @@ export const listProductsWithSort = async ({
 
   const pageParam = (page - 1) * limit
 
-  const nextPage = count > pageParam + limit ? pageParam + limit : null
+  // Adjust count to match filtered products (products without prices are filtered out)
+  const filteredCount = sortedProducts.length
+  const nextPage = filteredCount > pageParam + limit ? pageParam + limit : null
 
   const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit)
 
   return {
     response: {
       products: paginatedProducts,
-      count,
+      count: filteredCount,
     },
     nextPage,
     queryParams,
