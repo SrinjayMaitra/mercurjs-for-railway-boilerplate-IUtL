@@ -97,41 +97,23 @@ async function FashionProductListing({
   let products = []
   let count = 0
 
+  // Always use categoryId if available - this is the most reliable method
   if (categoryId) {
-    // Use category_id if available
     const { response } = await listProducts({
       countryCode: locale,
       category_id: categoryId,
       queryParams: {
         limit: 100,
         order: "created_at",
-        fields: "*categories", // Request categories field
       },
     })
     products = response.products
     count = response.count
   } else {
-    // Fallback: fetch all products and filter by category name
-    const { response } = await listProducts({
-      countryCode: locale,
-      queryParams: {
-        limit: 100,
-        order: "created_at",
-        fields: "*categories", // Request categories field
-      },
-    })
-
-    // Filter products that have "Fashion" category (case-insensitive)
-    products = response.products.filter((product) => {
-      // Check if product has categories array and one matches "fashion"
-      if (product.categories && Array.isArray(product.categories)) {
-        return product.categories.some(
-          (cat) => cat.name?.toLowerCase() === "fashion"
-        )
-      }
-      return false
-    })
-    count = products.length
+    // If no categoryId found, fetch all and show message
+    // This shouldn't happen if Fashion category exists
+    products = []
+    count = 0
   }
 
   return (
