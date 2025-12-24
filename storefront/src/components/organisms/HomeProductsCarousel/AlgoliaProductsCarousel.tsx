@@ -9,6 +9,7 @@ import { ProductCard } from "../ProductCard/ProductCard"
 import { listProducts } from "@/lib/data/products"
 import { useEffect, useState } from "react"
 import { getProductPrice } from "@/lib/helpers/get-product-price"
+import { generateFakeRating } from "@/lib/helpers/generate-fake-rating"
 
 export const AlgoliaProductsCarousel = ({
   locale,
@@ -65,18 +66,26 @@ const ProductsListing = ({ locale }: { locale: string }) => {
           <div className="w-full">
             <Carousel
               align="start"
-              items={items.map((hit) => (
-                <ProductCard
-                  key={hit.objectID}
-                  product={hit}
-                  api_product={prod?.find((p) => {
-                    const { cheapestPrice } = getProductPrice({
-                      product: p,
-                    })
-                    return p.id === hit.objectID && Boolean(cheapestPrice) && p
-                  })}
-                />
-              ))}
+              items={items.map((hit) => {
+                const apiProduct = prod?.find((p) => {
+                  const { cheapestPrice } = getProductPrice({
+                    product: p,
+                  })
+                  return p.id === hit.objectID && Boolean(cheapestPrice) && p
+                })
+                
+                const { rating, reviewCount } = generateFakeRating(hit.objectID || apiProduct?.id || "")
+                
+                return (
+                  <ProductCard
+                    key={hit.objectID}
+                    product={hit}
+                    api_product={apiProduct}
+                    rating={rating}
+                    reviewCount={reviewCount}
+                  />
+                )
+              })}
             />
           </div>
         )}

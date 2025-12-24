@@ -17,6 +17,7 @@ import { ProductListingSkeleton } from "@/components/organisms/ProductListingSke
 import { useEffect, useState } from "react"
 import { listProducts } from "@/lib/data/products"
 import { getProductPrice } from "@/lib/helpers/get-product-price"
+import { generateFakeRating } from "@/lib/helpers/generate-fake-rating"
 
 export const AlgoliaProductsListing = ({
   category_id,
@@ -185,16 +186,22 @@ const ProductsListing = ({
             <div className="w-full">
               <ul className="flex flex-wrap gap-4">
                 {products.map(
-                  (hit) =>
-                    apiProducts?.find((p: any) => p.id === hit.objectID) && (
+                  (hit) => {
+                    const apiProduct = apiProducts?.find((p: any) => p.id === hit.objectID)
+                    if (!apiProduct) return null
+                    
+                    const { rating, reviewCount } = generateFakeRating(hit.objectID || apiProduct.id || "")
+                    
+                    return (
                       <ProductCard
-                        api_product={apiProducts?.find(
-                          (p: any) => p.id === hit.objectID
-                        )}
+                        api_product={apiProduct}
                         key={hit.objectID}
                         product={hit}
+                        rating={rating}
+                        reviewCount={reviewCount}
                       />
                     )
+                  }
                 )}
               </ul>
             </div>
