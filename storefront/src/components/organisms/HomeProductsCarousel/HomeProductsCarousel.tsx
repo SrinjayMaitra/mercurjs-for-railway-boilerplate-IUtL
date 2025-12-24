@@ -32,12 +32,16 @@ export const HomeProductsCarousel = async ({
   if (!products.length && !sellerProducts.length) return null
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="w-full">
       <Carousel
         align="start"
         items={(sellerProducts.length ? sellerProducts : products).map(
           (product) => (
-            <StaggerItem key={product.id} variant="fade-up" className="h-full">
+            <StaggerItem
+              key={product.id}
+              variant="fade-up"
+              className="h-full w-full"
+            >
               <ProductCard
                 product={product}
                 api_product={

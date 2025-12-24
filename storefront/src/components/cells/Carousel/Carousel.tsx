@@ -56,8 +56,12 @@ export const CustomCarousel = ({
         className="embla__viewport overflow-hidden rounded-xs w-full xl:flex xl:justify-center"
         ref={emblaRef}
       >
-        <div className="embla__container flex">
-          {items.map((slide) => slide)}
+        <div className="embla__container flex gap-4">
+          {items.map((slide, index) => (
+            <div key={index} className="embla__slide min-w-0 flex-shrink-0 flex-[0_0_280px] sm:flex-[0_0_300px] md:flex-[0_0_320px] lg:flex-[0_0_340px]">
+              {slide}
+            </div>
+          ))}
         </div>
 
         <div className="flex justify-between items-center mt-4 sm:hidden">
