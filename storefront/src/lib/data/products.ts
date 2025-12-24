@@ -64,6 +64,21 @@ export const listProducts = async ({
 
   const useCached = forceCache || (limit <= 8 && !category_id && !collection_id)
 
+  // Debug: Log request parameters (only in development)
+  if (process.env.NODE_ENV === "development" && category_id) {
+    console.log(
+      `[DEBUG] Fetching products with:`,
+      {
+        category_id,
+        countryCode,
+        region_id: region?.id,
+        region_currency: region?.currency_code,
+        limit,
+        offset,
+      }
+    )
+  }
+
   return sdk.client
     .fetch<{
       products: (HttpTypes.StoreProduct & { seller?: SellerProps })[]
@@ -87,6 +102,23 @@ export const listProducts = async ({
       cache: useCached ? "force-cache" : "no-cache",
     })
     .then(({ products: productsRaw, count }) => {
+      // Debug: Log all products returned from API (only in development)
+      if (process.env.NODE_ENV === "development" && category_id) {
+        console.log(
+          `[DEBUG] API returned ${productsRaw.length} products for category ${category_id}, region ${region?.id}, country ${countryCode}:`,
+          productsRaw.map((p) => ({
+            id: p.id,
+            title: p.title,
+            handle: p.handle,
+            hasSeller: !!p.seller,
+            sellerId: p.seller?.id,
+            sellerStatus: p.seller?.store_status,
+            variantCount: p.variants?.length || 0,
+            variantsWithPrices: p.variants?.filter((v) => v.calculated_price !== null).length || 0,
+          }))
+        )
+      }
+
       // Filter out suspended sellers only
       const products = productsRaw.filter(
         (product) => product.seller?.store_status !== "SUSPENDED"
@@ -101,6 +133,20 @@ export const listProducts = async ({
           console.log(
             `[DEBUG] Found ${productsWithoutSellers.length} products without sellers in category ${category_id}:`,
             productsWithoutSellers.map((p) => ({ id: p.id, title: p.title, handle: p.handle }))
+          )
+        }
+        const suspendedSellers = productsRaw.filter(
+          (prod) => prod.seller?.store_status === "SUSPENDED"
+        )
+        if (suspendedSellers.length > 0) {
+          console.log(
+            `[DEBUG] Found ${suspendedSellers.length} products with suspended sellers:`,
+            suspendedSellers.map((p) => ({
+              id: p.id,
+              title: p.title,
+              sellerId: p.seller?.id,
+              sellerStatus: p.seller?.store_status,
+            }))
           )
         }
       }
@@ -204,9 +250,22 @@ export const listProductsWithSort = async ({
     if (productsWithoutPrices.length > 0) {
       console.log(
         `[DEBUG] Found ${productsWithoutPrices.length} products without calculated prices in category ${category_id}:`,
-        productsWithoutPrices.map((p) => ({ id: p.id, title: p.title, handle: p.handle }))
+        productsWithoutPrices.map((p) => ({
+          id: p.id,
+          title: p.title,
+          handle: p.handle,
+          variants: p.variants?.map((v) => ({
+            id: v.id,
+            title: v.title,
+            calculated_price: v.calculated_price,
+            prices: v.prices,
+          })),
+        }))
       )
     }
+    console.log(
+      `[DEBUG] After filtering: ${filteredProducts.length} products with sellers, ${pricedProducts.length} products with prices`
+    )
   }
 
   const sortedProducts = sortProducts(pricedProducts, sortBy)
