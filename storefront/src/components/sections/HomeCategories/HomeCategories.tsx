@@ -1,9 +1,9 @@
 "use client"
 import { Carousel } from "@/components/cells"
 import { CategoryCard } from "@/components/organisms"
-import { StaggerContainer, StaggerItem } from "@/components/animations/StaggerContainer"
 import { RevealText } from "@/components/animations/RevealText"
 import { Reveal } from "@/components/animations/Reveal"
+import { ParallaxCategoryCard } from "./ParallaxCategoryCard"
 
 export const categories: { id: number; name: string; handle: string }[] = [
   {
@@ -56,17 +56,15 @@ export const HomeCategories = ({ heading }: { heading: string }) => {
             </p>
           </Reveal>
         </div>
-        <StaggerContainer>
-          <Carousel
-            autoScroll={true}
-            autoScrollDelay={2500}
-            items={categories?.map((category) => (
-              <StaggerItem key={category.id} variant="scale-up" className="h-full">
-                <CategoryCard category={category} />
-              </StaggerItem>
-            ))}
-          />
-        </StaggerContainer>
+        <Carousel
+          autoScroll={true}
+          autoScrollDelay={2500}
+          items={categories?.map((category, index) => (
+            <ParallaxCategoryCard key={category.id} index={index}>
+              <CategoryCard category={category} />
+            </ParallaxCategoryCard>
+          ))}
+        />
       </div>
     </section>
   )

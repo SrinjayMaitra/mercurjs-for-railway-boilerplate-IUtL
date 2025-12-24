@@ -4,8 +4,8 @@ import { listProducts } from "@/lib/data/products"
 import { Product } from "@/types/product"
 import { HttpTypes } from "@medusajs/types"
 import { getProductPrice } from "@/lib/helpers/get-product-price"
-import { StaggerItem } from "@/components/animations/StaggerContainer"
 import { generateFakeRating } from "@/lib/helpers/generate-fake-rating"
+import { ParallaxProductCard } from "./ParallaxProductCard"
 
 export const HomeProductsCarousel = async ({
   locale,
@@ -39,7 +39,7 @@ export const HomeProductsCarousel = async ({
         autoScroll={true}
         autoScrollDelay={3000}
         items={(sellerProducts.length ? sellerProducts : products).map(
-          (product) => {
+          (product, index) => {
             const apiProduct = home
               ? (product as HttpTypes.StoreProduct)
               : products.find((p) => {
@@ -52,14 +52,13 @@ export const HomeProductsCarousel = async ({
                     Boolean(cheapestPrice)
                   )
                 })
-            
+
             const { rating, reviewCount } = generateFakeRating(product.id || apiProduct?.id || "")
-            
+
             return (
-              <StaggerItem
+              <ParallaxProductCard
                 key={product.id}
-                variant="fade-up"
-                className="h-full w-full"
+                index={index}
               >
                 <ProductCard
                   product={product}
@@ -67,7 +66,7 @@ export const HomeProductsCarousel = async ({
                   rating={rating}
                   reviewCount={reviewCount}
                 />
-              </StaggerItem>
+              </ParallaxProductCard>
             )
           }
         )}

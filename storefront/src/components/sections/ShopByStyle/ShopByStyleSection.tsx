@@ -5,7 +5,7 @@ import { ArrowRightIcon } from "@/icons"
 import { Style } from "@/types/styles"
 import { RevealText } from "@/components/animations/RevealText"
 import { StaggerContainer, StaggerItem } from "@/components/animations/StaggerContainer"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import { useRef } from "react"
 
 export const styles: Style[] = [
@@ -43,9 +43,16 @@ export function ShopByStyleSection() {
     offset: ["start end", "end start"],
   })
 
-  // Smooth parallax for the image
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05])
+  // Smooth spring physics for natural movement
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+  })
+
+  // Enhanced parallax zoom effects for the image
+  const y = useTransform(smoothProgress, [0, 1], ["-15%", "15%"])
+  const scale = useTransform(smoothProgress, [0, 0.5, 1], [1.15, 1, 1.1])
+  const rotate = useTransform(smoothProgress, [0, 1], [-3, 3])
 
   return (
     <section ref={containerRef} className="bg-primary container">
@@ -69,7 +76,10 @@ export function ShopByStyleSection() {
           ))}
         </StaggerContainer>
         <div className="relative hidden lg:block overflow-hidden h-full rounded-sm">
-          <motion.div style={{ y, scale }} className="h-full">
+          <motion.div
+            style={{ y, scale, rotate }}
+            className="h-full will-change-transform"
+          >
             <Image
               loading="lazy"
               fetchPriority="high"

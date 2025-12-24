@@ -1,13 +1,30 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import LocalizedClientLink from "@/components/molecules/LocalizedLink/LocalizedLink"
 import Image from "next/image"
 import { ArrowRightIcon } from "@/icons"
+import { useRef } from "react"
 
 export const BannerSection = () => {
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  })
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+  })
+
+  // Parallax zoom effect for the image
+  const imageScale = useTransform(smoothProgress, [0, 0.5, 1], [1.2, 1, 1.15])
+  const imageY = useTransform(smoothProgress, [0, 1], ["-10%", "10%"])
+  const imageRotate = useTransform(smoothProgress, [0, 1], [-2, 2])
+
   return (
-    <section className="py-12 lg:py-20">
+    <section ref={sectionRef} className="py-12 lg:py-20">
       <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 bg-[#0a0a0a] rounded-3xl overflow-hidden">
           {/* Content Side */}
@@ -84,16 +101,25 @@ export const BannerSection = () => {
             </motion.div>
           </div>
 
-          {/* Image Side */}
-          <div className="relative h-[400px] lg:h-auto">
-            <Image
-              loading="lazy"
-              src="/images/banner-section/Image.jpg"
-              alt="Boho fashion collection - Model wearing a floral dress with yellow boots"
-              fill
-              className="object-cover object-center"
-              sizes="(min-width: 1024px) 50vw, 100vw"
-            />
+          {/* Image Side with Parallax Zoom */}
+          <div className="relative h-[400px] lg:h-auto overflow-hidden">
+            <motion.div
+              style={{
+                scale: imageScale,
+                y: imageY,
+                rotate: imageRotate,
+              }}
+              className="absolute inset-0 will-change-transform"
+            >
+              <Image
+                loading="lazy"
+                src="/images/banner-section/Image.jpg"
+                alt="Boho fashion collection - Model wearing a floral dress with yellow boots"
+                fill
+                className="object-cover object-center"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+              />
+            </motion.div>
             {/* Gradient overlay for better text contrast if needed */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/30 to-transparent lg:hidden" />
           </div>
