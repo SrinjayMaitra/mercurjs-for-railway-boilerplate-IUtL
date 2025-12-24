@@ -25,7 +25,18 @@ export const CategoryNavbar = ({
       >
         All Products
       </LocalizedClientLink>
-      {categories?.map(({ id, handle, name }) => (
+      <LocalizedClientLink
+        href="/apparel"
+        onClick={() => (onClose ? onClose(false) : null)}
+        className={cn(
+          "label-md uppercase px-4 my-3 md:my-0 flex items-center justify-between",
+          category === "apparel" && "md:border-b md:border-primary"
+        )}
+      >
+        Apparel
+        <CollapseIcon size={18} className="-rotate-90 md:hidden" />
+      </LocalizedClientLink>
+      {categories?.filter(({ name }) => name?.toLowerCase() !== "apparel").map(({ id, handle, name }) => (
         <LocalizedClientLink
           key={id}
           href={`/categories/${handle}`}
