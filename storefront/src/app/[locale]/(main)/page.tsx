@@ -5,6 +5,7 @@ import {
   HomeCategories,
   HomeProductSection,
   ShopByStyleSection,
+  ReviewSection,
 } from "@/components/sections"
 
 import type { Metadata } from "next"
@@ -192,6 +193,10 @@ export default async function Home({
 
       <Reveal width="100%" variant="fade-up" delay={0.2}>
         <ShopByStyleSection />
+      </Reveal>
+
+      <Reveal width="100%" variant="fade-up" delay={0.2}>
+        <ReviewSection />
       </Reveal>
 
       <Reveal width="100%" variant="fade-up" delay={0.2}>
