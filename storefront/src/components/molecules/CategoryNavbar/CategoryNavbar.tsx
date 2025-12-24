@@ -36,7 +36,18 @@ export const CategoryNavbar = ({
         Apparel
         <CollapseIcon size={18} className="-rotate-90 md:hidden" />
       </LocalizedClientLink>
-      {categories?.filter(({ name }) => name?.toLowerCase() !== "apparel").map(({ id, handle, name }) => (
+      <LocalizedClientLink
+        href="/fashion"
+        onClick={() => (onClose ? onClose(false) : null)}
+        className={cn(
+          "label-md uppercase px-4 my-3 md:my-0 flex items-center justify-between",
+          category === "fashion" && "md:border-b md:border-primary"
+        )}
+      >
+        Fashion
+        <CollapseIcon size={18} className="-rotate-90 md:hidden" />
+      </LocalizedClientLink>
+      {categories?.filter(({ name }) => name?.toLowerCase() !== "apparel" && name?.toLowerCase() !== "fashion").map(({ id, handle, name }) => (
         <LocalizedClientLink
           key={id}
           href={`/categories/${handle}`}
