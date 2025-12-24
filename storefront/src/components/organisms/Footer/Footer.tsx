@@ -53,7 +53,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold mb-4">
-              <span className="text-[#d2ff1f]">Mer</span>cur
+              <span className="text-[#d2ff1f]">FLE</span>EK
             </h2>
             <p className="text-white/60 text-sm leading-relaxed mb-6 max-w-sm">
               Premium fashion and lifestyle products curated for the modern individual.
@@ -165,7 +165,7 @@ export function Footer() {
         <div className="max-w-[1400px] mx-auto px-4 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-white/40">
-              © {new Date().getFullYear()} Mercur. All rights reserved.
+              © {new Date().getFullYear()} FLEEK. All rights reserved.
             </p>
             <div className="flex gap-6">
               <a href="#" className="text-sm text-white/40 hover:text-white transition-colors duration-200">

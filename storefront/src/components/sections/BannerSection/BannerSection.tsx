@@ -53,7 +53,7 @@ export const BannerSection = () => {
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <LocalizedClientLink
-                href="/collections/boho"
+                href="/fashion"
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-[#d2ff1f] text-black font-semibold rounded-full hover:bg-[#c4f018] hover:scale-105 transition-all duration-300"
               >
                 EXPLORE COLLECTION
