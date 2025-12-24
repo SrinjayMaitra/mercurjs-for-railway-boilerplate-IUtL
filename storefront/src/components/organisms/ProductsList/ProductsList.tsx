@@ -1,6 +1,7 @@
 import { ProductCard } from "../ProductCard/ProductCard"
 import { DummyProductCard } from "../ProductCard/DummyProductCard"
 import { HttpTypes } from "@medusajs/types"
+import { generateFakeRating } from "@/lib/helpers/generate-fake-rating"
 
 const DUMMY_PRODUCTS = [
   {
@@ -138,9 +139,18 @@ export const ProductsList = ({
   return (
     <>
       {/* Show real products first */}
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} api_product={product} />
-      ))}
+      {products.map((product) => {
+        const { rating, reviewCount } = generateFakeRating(product.id)
+        return (
+          <ProductCard
+            key={product.id}
+            product={product}
+            api_product={product}
+            rating={rating}
+            reviewCount={reviewCount}
+          />
+        )
+      })}
       {/* Fill remaining space with dummy products */}
       {dummyProductsToShow.map((product) => (
         <DummyProductCard key={product.id} product={product} />

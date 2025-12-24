@@ -6,13 +6,18 @@ import { BaseHit, Hit } from "instantsearch.js"
 import clsx from "clsx"
 import LocalizedClientLink from "@/components/molecules/LocalizedLink/LocalizedLink"
 import { getProductPrice } from "@/lib/helpers/get-product-price"
+import { StarRating } from "@/components/atoms"
 
 export const ProductCard = ({
   product,
   api_product,
+  rating,
+  reviewCount,
 }: {
   product: Hit<HttpTypes.StoreProduct> | Partial<Hit<BaseHit>>
   api_product?: HttpTypes.StoreProduct | null
+  rating?: number
+  reviewCount?: number
 }) => {
   if (!api_product) {
     return null
@@ -24,6 +29,8 @@ export const ProductCard = ({
 
   const productName = String(product.title || "Product")
   const hasDiscount = cheapestPrice?.calculated_price !== cheapestPrice?.original_price
+  const displayRating = rating ?? 0
+  const displayReviewCount = reviewCount ?? 0
 
   return (
     <LocalizedClientLink
@@ -84,6 +91,19 @@ export const ProductCard = ({
           <h3 className="text-[15px] font-medium text-primary leading-snug line-clamp-2 group-hover:text-secondary transition-colors duration-200">
             {product.title}
           </h3>
+          {displayRating > 0 && (
+            <div className="flex items-center gap-2">
+              <StarRating rate={displayRating} starSize={14} />
+              <span className="text-xs text-secondary">
+                {displayRating.toFixed(1)}
+              </span>
+              {displayReviewCount > 0 && (
+                <span className="text-xs text-secondary">
+                  ({displayReviewCount})
+                </span>
+              )}
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <p className={clsx(
               "text-[15px] font-semibold",
