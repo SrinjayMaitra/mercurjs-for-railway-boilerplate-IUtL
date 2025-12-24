@@ -94,6 +94,17 @@ export const listProducts = async ({
 
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
+      // Debug: Log products without sellers (only in development)
+      if (process.env.NODE_ENV === "development" && category_id) {
+        const productsWithoutSellers = productsRaw.filter((prod) => !prod?.seller)
+        if (productsWithoutSellers.length > 0) {
+          console.log(
+            `[DEBUG] Found ${productsWithoutSellers.length} products without sellers in category ${category_id}:`,
+            productsWithoutSellers.map((p) => ({ id: p.id, title: p.title, handle: p.handle }))
+          )
+        }
+      }
+
       const response = products.filter((prod) => {
         // @ts-ignore Property 'seller' exists but TypeScript doesn't recognize it
         const reviews = prod.seller?.reviews?.filter((item) => !!item) ?? []
@@ -184,6 +195,19 @@ export const listProductsWithSort = async ({
   const pricedProducts = filteredProducts.filter((prod) =>
     prod.variants?.some((variant) => variant.calculated_price !== null)
   )
+
+  // Debug: Log products without prices (only in development)
+  if (process.env.NODE_ENV === "development" && category_id) {
+    const productsWithoutPrices = filteredProducts.filter(
+      (prod) => !prod.variants?.some((variant) => variant.calculated_price !== null)
+    )
+    if (productsWithoutPrices.length > 0) {
+      console.log(
+        `[DEBUG] Found ${productsWithoutPrices.length} products without calculated prices in category ${category_id}:`,
+        productsWithoutPrices.map((p) => ({ id: p.id, title: p.title, handle: p.handle }))
+      )
+    }
+  }
 
   const sortedProducts = sortProducts(pricedProducts, sortBy)
 
