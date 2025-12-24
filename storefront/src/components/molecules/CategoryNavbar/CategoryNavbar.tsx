@@ -58,7 +58,21 @@ export const CategoryNavbar = ({
         Electronics
         <CollapseIcon size={18} className="-rotate-90 md:hidden" />
       </LocalizedClientLink>
-      {categories?.filter(({ name }) => name?.toLowerCase() !== "apparel" && name?.toLowerCase() !== "fashion" && name?.toLowerCase() !== "electronics").map(({ id, handle, name }) => (
+      <LocalizedClientLink
+        href="/home-and-garden"
+        onClick={() => (onClose ? onClose(false) : null)}
+        className={cn(
+          "label-md uppercase px-4 my-3 md:my-0 flex items-center justify-between",
+          category === "home-and-garden" && "md:border-b md:border-primary"
+        )}
+      >
+        Home & Garden
+        <CollapseIcon size={18} className="-rotate-90 md:hidden" />
+      </LocalizedClientLink>
+      {categories?.filter(({ name }) => {
+        const catName = name?.toLowerCase() || ""
+        return catName !== "apparel" && catName !== "fashion" && catName !== "electronics" && catName !== "home & garden" && catName !== "home and garden"
+      }).map(({ id, handle, name }) => (
         <LocalizedClientLink
           key={id}
           href={`/categories/${handle}`}
