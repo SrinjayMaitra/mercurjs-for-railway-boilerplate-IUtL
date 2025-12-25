@@ -16,7 +16,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   try {
     // Get cart with all relations
     const cart = await cartModuleService.retrieveCart(cartId, {
-      relations: ["items", "items.product", "shipping_address", "region"],
+      relations: ["items", "shipping_address"],
     })
 
     // Get all shipping options
