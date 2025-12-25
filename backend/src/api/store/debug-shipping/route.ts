@@ -3,17 +3,27 @@ import { Modules, ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const fulfillmentModuleService = req.scope.resolve(Modules.FULFILLMENT)
+  const pricingModuleService = req.scope.resolve(Modules.PRICING)
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
   try {
-    // Get all shipping options
-    const shippingOptions = await fulfillmentModuleService.listShippingOptions({})
+    // Get all shipping options with prices
+    const shippingOptions = await fulfillmentModuleService.listShippingOptions(
+      {},
+      { relations: ["rules", "type", "prices"] }
+    )
 
-    // Get all fulfillment sets
-    const fulfillmentSets = await fulfillmentModuleService.listFulfillmentSets({})
+    // Get all fulfillment sets with service zones
+    const fulfillmentSets = await fulfillmentModuleService.listFulfillmentSets(
+      {},
+      { relations: ["service_zones", "service_zones.geo_zones"] }
+    )
 
-    // Get all service zones
-    const serviceZones = await fulfillmentModuleService.listServiceZones({})
+    // Get all service zones with geo zones
+    const serviceZones = await fulfillmentModuleService.listServiceZones(
+      {},
+      { relations: ["geo_zones"] }
+    )
 
     // Get all shipping profiles
     const shippingProfiles = await fulfillmentModuleService.listShippingProfiles({})
@@ -35,6 +45,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
           shipping_profile_id: opt.shipping_profile_id,
           provider_id: opt.provider_id,
           rules: opt.rules,
+          prices: (opt as any).prices,
+          type: (opt as any).type,
         })),
         fulfillment_sets: fulfillmentSets.map(fs => ({
           id: fs.id,
