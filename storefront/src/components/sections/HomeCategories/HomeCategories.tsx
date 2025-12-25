@@ -33,28 +33,28 @@ export const categories: { id: number; name: string; handle: string }[] = [
   },
   {
     id: 6,
-    name: "Running",
-    handle: "running",
+    name: "Sneakers",
+    handle: "sneakers",
   },
   {
     id: 7,
-    name: "Casual",
-    handle: "casual",
+    name: "Sandals",
+    handle: "sandals",
   },
   {
     id: 8,
-    name: "Formal",
-    handle: "formal",
+    name: "Boots",
+    handle: "boots",
   },
   {
     id: 9,
-    name: "Kids",
-    handle: "kids",
+    name: "Sport",
+    handle: "sport",
   },
   {
     id: 10,
-    name: "Limited Edition",
-    handle: "limited-edition",
+    name: "Accessories",
+    handle: "accessories",
   },
 ]
 
