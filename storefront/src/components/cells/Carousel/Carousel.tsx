@@ -1,11 +1,11 @@
 "use client"
 
 import useEmblaCarousel from "embla-carousel-react"
-import Autoplay from "embla-carousel-autoplay"
+import AutoScroll from "embla-carousel-auto-scroll"
 
 import { Indicator } from "@/components/atoms"
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons"
-import { useCallback, useEffect, useState, useRef } from "react"
+import { useCallback, useEffect, useState, useRef, useMemo } from "react"
 import { EmblaCarouselType } from "embla-carousel"
 import tailwindConfig from "../../../../tailwind.config"
 
@@ -24,22 +24,26 @@ export const CustomCarousel = ({
   autoScrollDelay?: number
   showArrows?: boolean
 }) => {
-  const autoplayPlugin = useRef(
-    Autoplay({
-      delay: autoScrollDelay,
-      stopOnInteraction: false,
-      stopOnMouseEnter: true,
-      playOnInit: autoScroll,
-    })
+  // Use auto-scroll plugin for smooth continuous scrolling
+  const autoScrollPlugin = useMemo(
+    () =>
+      AutoScroll({
+        speed: 0.8,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+        playOnInit: autoScroll,
+      }),
+    [autoScroll]
   )
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: true,
       align,
-      dragFree: autoScroll,
+      dragFree: true,
+      containScroll: false,
     },
-    autoScroll ? [autoplayPlugin.current] : []
+    autoScroll ? [autoScrollPlugin] : []
   )
 
   const [selectedIndex, setSelectedIndex] = useState(0)

@@ -13,15 +13,17 @@ export const BannerSection = () => {
     offset: ["start end", "end start"],
   })
 
+  // Slower, smoother spring for elegant animations
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+    stiffness: 30,
+    damping: 50,
+    restDelta: 0.0001,
   })
 
-  // Parallax zoom effect for the image
-  const imageScale = useTransform(smoothProgress, [0, 0.5, 1], [1.2, 1, 1.15])
-  const imageY = useTransform(smoothProgress, [0, 1], ["-10%", "10%"])
-  const imageRotate = useTransform(smoothProgress, [0, 1], [-2, 2])
+  // Subtle parallax zoom effect for the image
+  const imageScale = useTransform(smoothProgress, [0, 0.5, 1], [1.08, 1, 1.05])
+  const imageY = useTransform(smoothProgress, [0, 1], ["-5%", "5%"])
+  const imageRotate = useTransform(smoothProgress, [0, 1], [-0.8, 0.8])
 
   return (
     <section ref={sectionRef} className="py-12 lg:py-20">

@@ -19,19 +19,23 @@ export const ParallaxCategoryCard = ({
     offset: ["start end", "end start"],
   })
 
+  // Much slower, smoother spring for elegant animations
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 25,
-    restDelta: 0.001,
+    stiffness: 25,
+    damping: 45,
+    restDelta: 0.0001,
   })
 
-  // Create different effects based on index
+  // Create different effects based on index - more subtle and elegant
   const patterns = [
-    { scaleRange: [0.8, 1.1, 0.9], yRange: [60, -20, 40], rotateRange: [-3, 2, -2] },
-    { scaleRange: [0.9, 1.08, 0.85], yRange: [-40, 15, -30], rotateRange: [2, -1, 3] },
-    { scaleRange: [0.85, 1.12, 0.88], yRange: [50, -25, 35], rotateRange: [-2, 3, -1] },
-    { scaleRange: [0.88, 1.06, 0.92], yRange: [-35, 20, -25], rotateRange: [3, -2, 1] },
-    { scaleRange: [0.82, 1.15, 0.87], yRange: [45, -15, 50], rotateRange: [-1, 2, -3] },
+    { scaleRange: [0.94, 1.02, 0.96], yRange: [25, -8, 20], rotateRange: [-0.6, 0.4, -0.8] },
+    { scaleRange: [0.96, 1.03, 0.94], yRange: [-18, 6, -15], rotateRange: [0.5, -0.3, 0.7] },
+    { scaleRange: [0.93, 1.04, 0.95], yRange: [22, -10, 18], rotateRange: [-0.4, 0.6, -0.5] },
+    { scaleRange: [0.95, 1.02, 0.97], yRange: [-20, 8, -16], rotateRange: [0.6, -0.4, 0.5] },
+    { scaleRange: [0.94, 1.03, 0.96], yRange: [18, -6, 22], rotateRange: [-0.5, 0.5, -0.6] },
+    { scaleRange: [0.96, 1.02, 0.94], yRange: [-15, 10, -18], rotateRange: [0.4, -0.5, 0.6] },
+    { scaleRange: [0.93, 1.04, 0.95], yRange: [20, -8, 16], rotateRange: [-0.7, 0.3, -0.5] },
+    { scaleRange: [0.95, 1.03, 0.96], yRange: [-22, 5, -20], rotateRange: [0.5, -0.4, 0.7] },
   ]
 
   const pattern = patterns[index % patterns.length]
@@ -56,8 +60,8 @@ export const ParallaxCategoryCard = ({
 
   const opacity = useTransform(
     smoothProgress,
-    [0, 0.2, 0.8, 1],
-    [0.5, 1, 1, 0.5]
+    [0, 0.15, 0.5, 0.85, 1],
+    [0.75, 0.95, 1, 0.95, 0.75]
   )
 
   return (
@@ -70,6 +74,7 @@ export const ParallaxCategoryCard = ({
         opacity,
       }}
       className="h-full will-change-transform"
+      transition={{ type: "spring", stiffness: 25, damping: 45 }}
     >
       {children}
     </motion.div>

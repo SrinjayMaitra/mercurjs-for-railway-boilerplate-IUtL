@@ -43,16 +43,17 @@ export function ShopByStyleSection() {
     offset: ["start end", "end start"],
   })
 
-  // Smooth spring physics for natural movement
+  // Slower, smoother spring for elegant animations
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+    stiffness: 30,
+    damping: 50,
+    restDelta: 0.0001,
   })
 
-  // Enhanced parallax zoom effects for the image
-  const y = useTransform(smoothProgress, [0, 1], ["-15%", "15%"])
-  const scale = useTransform(smoothProgress, [0, 0.5, 1], [1.15, 1, 1.1])
-  const rotate = useTransform(smoothProgress, [0, 1], [-3, 3])
+  // Subtle parallax zoom effects for the image
+  const y = useTransform(smoothProgress, [0, 1], ["-6%", "6%"])
+  const scale = useTransform(smoothProgress, [0, 0.5, 1], [1.06, 1, 1.04])
+  const rotate = useTransform(smoothProgress, [0, 1], [-0.8, 0.8])
 
   return (
     <section ref={containerRef} className="bg-primary container">

@@ -31,6 +31,31 @@ export const categories: { id: number; name: string; handle: string }[] = [
     name: "Accessories",
     handle: "accessories",
   },
+  {
+    id: 6,
+    name: "Running",
+    handle: "running",
+  },
+  {
+    id: 7,
+    name: "Casual",
+    handle: "casual",
+  },
+  {
+    id: 8,
+    name: "Formal",
+    handle: "formal",
+  },
+  {
+    id: 9,
+    name: "Kids",
+    handle: "kids",
+  },
+  {
+    id: 10,
+    name: "Limited Edition",
+    handle: "limited-edition",
+  },
 ]
 
 export const HomeCategories = ({ heading }: { heading: string }) => {
@@ -58,7 +83,7 @@ export const HomeCategories = ({ heading }: { heading: string }) => {
         </div>
         <Carousel
           autoScroll={true}
-          autoScrollDelay={2500}
+          autoScrollDelay={50}
           items={categories?.map((category, index) => (
             <ParallaxCategoryCard key={category.id} index={index}>
               <CategoryCard category={category} />

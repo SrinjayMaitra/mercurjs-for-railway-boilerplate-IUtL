@@ -21,7 +21,7 @@ export const HomeProductsCarousel = async ({
   } = await listProducts({
     countryCode: locale,
     queryParams: {
-      limit: home ? 4 : undefined,
+      limit: home ? 12 : undefined,
       order: "created_at",
       handle: home
         ? undefined
@@ -37,7 +37,7 @@ export const HomeProductsCarousel = async ({
       <Carousel
         align="start"
         autoScroll={true}
-        autoScrollDelay={3000}
+        autoScrollDelay={50}
         items={(sellerProducts.length ? sellerProducts : products).map(
           (product, index) => {
             const apiProduct = home
