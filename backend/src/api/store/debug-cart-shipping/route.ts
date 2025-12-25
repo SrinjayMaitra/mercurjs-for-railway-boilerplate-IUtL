@@ -25,10 +25,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       { relations: ["rules", "type"] }
     )
 
-    // Get stock location to sales channel links
+    // Get stock location to sales channel links AND fulfillment sets
     const { data: stockLocationLinks } = await query.graph({
       entity: "stock_location",
-      fields: ["id", "name", "sales_channels.*"],
+      fields: ["id", "name", "sales_channels.*", "fulfillment_sets.*"],
     })
 
     // Get fulfillment set links

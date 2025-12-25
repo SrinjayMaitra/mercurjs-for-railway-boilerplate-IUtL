@@ -16,7 +16,9 @@
       "Bash(railway run:*)",
       "Bash(railway link:*)",
       "Bash(curl:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(timeout:*)",
+      "Bash(ping:*)"
     ]
   }
 }
