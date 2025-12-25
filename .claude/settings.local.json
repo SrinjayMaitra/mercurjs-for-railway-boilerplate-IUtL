@@ -8,7 +8,9 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nUpdate pnpm-lock.yaml for embla-carousel-auto-scroll\n\nAdded embla-carousel-auto-scroll package for smooth continuous\ncarousel scrolling animation.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(dir /b /s \"c:\\\\Mercur\\\\mercurjs-for-railway-boilerplate-IUtL\\\\backend\\\\src\\\\api\")",
+      "Bash(cat:*)"
     ]
   }
 }

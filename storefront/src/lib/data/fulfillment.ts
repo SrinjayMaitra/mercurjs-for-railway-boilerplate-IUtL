@@ -25,15 +25,25 @@ export const listCartShippingMethods = async (
         query: {
           cart_id: cartId,
           fields:
-            "+service_zone.fulfllment_set.type,*service_zone.fulfillment_set.location.address",
+            "+service_zone.fulfillment_set.type,*service_zone.fulfillment_set.location.address,+seller_id,+seller_name,+price_type,+amount,+rules",
         },
         headers,
         next,
         cache: "no-cache",
       }
     )
-    .then(({ shipping_options }) => shipping_options)
-    .catch(() => {
+    .then(({ shipping_options }) => {
+      // Debug: Log shipping options
+      console.log("[SHIPPING] Options received for cart", cartId, ":", shipping_options?.length || 0, "options")
+      if (shipping_options?.length) {
+        shipping_options.forEach((opt, i) => {
+          console.log(`[SHIPPING] Option ${i + 1}:`, opt.id, opt.name, "seller:", opt.seller_id, "price_type:", opt.price_type, "amount:", opt.amount)
+        })
+      }
+      return shipping_options
+    })
+    .catch((error) => {
+      console.error("[SHIPPING ERROR] Failed to fetch shipping options for cart", cartId, ":", error?.message || error)
       return null
     })
 }

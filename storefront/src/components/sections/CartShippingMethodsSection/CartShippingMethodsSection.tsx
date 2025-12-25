@@ -73,11 +73,21 @@ const CartShippingMethodsSection: React.FC<ShippingProps> = ({
 
   const isOpen = searchParams.get("step") === "delivery"
 
+  // Debug: Log available shipping methods
+  if (process.env.NODE_ENV === "development") {
+    console.log("[DEBUG] CartShippingMethodsSection - Raw availableShippingMethods:", availableShippingMethods)
+  }
+
   const _shippingMethods = availableShippingMethods?.filter(
     (sm) =>
       sm.rules?.find((rule: any) => rule.attribute === "is_return")?.value !==
       "true"
   )
+
+  // Debug: Log filtered shipping methods
+  if (process.env.NODE_ENV === "development") {
+    console.log("[DEBUG] CartShippingMethodsSection - Filtered _shippingMethods:", _shippingMethods?.length || 0, _shippingMethods)
+  }
 
   useEffect(() => {
     const set = new Set<string>()
@@ -161,16 +171,8 @@ const CartShippingMethodsSection: React.FC<ShippingProps> = ({
       acc[sellerId] = []
     }
 
-    const amount = Number(
-      method.price_type === "flat"
-        ? method.amount
-        : calculatedPricesMap[method.id]
-    )
-
-    // Include methods with valid amounts OR flat rate methods OR calculated methods
-    if (!isNaN(amount) || method.price_type === "flat" || method.price_type === "calculated") {
-      acc[sellerId]?.push(method)
-    }
+    // Include ALL shipping methods - the price will be fetched/calculated as needed
+    acc[sellerId]?.push(method)
 
     return acc
   }, {}) || {}
@@ -178,6 +180,11 @@ const CartShippingMethodsSection: React.FC<ShippingProps> = ({
   // If we have shipping methods but none grouped, add them all to a default 'store' group
   if (_shippingMethods?.length && Object.keys(groupedBySellerId).length === 0) {
     groupedBySellerId['store'] = _shippingMethods
+  }
+
+  // Debug: Log grouped shipping methods
+  if (process.env.NODE_ENV === "development") {
+    console.log("[DEBUG] CartShippingMethodsSection - groupedBySellerId:", groupedBySellerId)
   }
 
   const handleEdit = () => {
@@ -244,6 +251,20 @@ const CartShippingMethodsSection: React.FC<ShippingProps> = ({
           <div className="grid">
             <div data-testid="delivery-options-container">
               <div className="pb-8 md:pt-0 pt-2">
+                {Object.keys(groupedBySellerId).length === 0 && (
+                  <div className="text-center py-4 text-ui-fg-subtle bg-ui-bg-subtle rounded-lg border border-ui-border-base">
+                    <Text className="mb-2 font-medium">No shipping options available</Text>
+                    <Text className="text-sm">
+                      Shipping options are not configured for your address region.
+                      Please ensure fulfillment is set up in the admin panel with:
+                    </Text>
+                    <ul className="text-sm text-left mt-2 ml-8 list-disc">
+                      <li>A stock location with fulfillment enabled</li>
+                      <li>A service zone covering your country</li>
+                      <li>Shipping options linked to the service zone</li>
+                    </ul>
+                  </div>
+                )}
                 {Object.keys(groupedBySellerId).map((key) => {
                   return (
                     <div key={key} className="mb-4">

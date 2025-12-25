@@ -42,6 +42,14 @@ async function CheckoutPageContent({}) {
   const paymentMethods = await listCartPaymentMethods(cart.region?.id ?? "")
   const customer = await retrieveCustomer()
 
+  // Debug: Log cart and shipping info
+  console.log("[DEBUG] Checkout - Cart ID:", cart.id)
+  console.log("[DEBUG] Checkout - Cart Region:", cart.region?.id, cart.region?.name)
+  console.log("[DEBUG] Checkout - Cart Region Countries:", cart.region?.countries)
+  console.log("[DEBUG] Checkout - Shipping Address:", JSON.stringify(cart.shipping_address))
+  console.log("[DEBUG] Checkout - Shipping Methods Available:", shippingMethods?.length || 0)
+  console.log("[DEBUG] Checkout - Shipping Methods:", JSON.stringify(shippingMethods))
+
   return (
     <PaymentWrapper cart={cart}>
       <main className="container">

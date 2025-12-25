@@ -37,15 +37,21 @@ export async function retrieveCart(cartId?: string) {
       method: "GET",
       query: {
         fields:
-          "*items,*region, *items.product, *items.variant, *items.variant.options, items.variant.options.option.title," +
+          "*items,*region,*region.countries,*shipping_address,*billing_address, *items.product, *items.variant, *items.variant.options, items.variant.options.option.title," +
           "*items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, *items.product.seller" +
           "",
       },
       headers,
       cache: "no-cache",
     })
-    .then(({ cart }) => cart)
-    .catch(() => null)
+    .then(({ cart }) => {
+      console.log("[CART] Retrieved cart:", cart.id, "region:", cart.region?.id, "shipping_address:", cart.shipping_address?.country_code)
+      return cart
+    })
+    .catch((error) => {
+      console.error("[CART ERROR] Failed to retrieve cart:", error?.message || error)
+      return null
+    })
 }
 
 export async function getOrSetCart(countryCode: string) {
