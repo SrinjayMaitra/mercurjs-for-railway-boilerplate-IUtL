@@ -102,78 +102,29 @@ export const listProducts = async ({
       cache: useCached ? "force-cache" : "no-cache",
     })
     .then(({ products: productsRaw, count }) => {
-      // Debug: Log all products returned from API (only in development)
-      if (process.env.NODE_ENV === "development" && category_id) {
-        console.log(
-          `[DEBUG] API returned ${productsRaw.length} products for category ${category_id}, region ${region?.id}, country ${countryCode}:`,
-          productsRaw.map((p) => ({
-            id: p.id,
-            title: p.title,
-            handle: p.handle,
-            hasSeller: !!p.seller,
-            sellerId: p.seller?.id,
-            sellerStatus: p.seller?.store_status,
-            variantCount: p.variants?.length || 0,
-            variantsWithPrices: p.variants?.filter((v) => v.calculated_price !== null).length || 0,
-          }))
-        )
-      }
-
-      // Filter out suspended sellers only
+      // Filter out only suspended sellers, allow products without sellers
       const products = productsRaw.filter(
         (product) => product.seller?.store_status !== "SUSPENDED"
       )
 
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
-      // Debug: Log products without sellers (only in development)
-      if (process.env.NODE_ENV === "development" && category_id) {
-        const productsWithoutSellers = productsRaw.filter((prod) => !prod?.seller)
-        if (productsWithoutSellers.length > 0) {
-          console.log(
-            `[DEBUG] Found ${productsWithoutSellers.length} products without sellers in category ${category_id}:`,
-            productsWithoutSellers.map((p) => ({ id: p.id, title: p.title, handle: p.handle }))
-          )
-        }
-        const suspendedSellers = productsRaw.filter(
-          (prod) => prod.seller?.store_status === "SUSPENDED"
-        )
-        if (suspendedSellers.length > 0) {
-          console.log(
-            `[DEBUG] Found ${suspendedSellers.length} products with suspended sellers:`,
-            suspendedSellers.map((p) => ({
-              id: p.id,
-              title: p.title,
-              sellerId: p.seller?.id,
-              sellerStatus: p.seller?.store_status,
-            }))
-          )
-        }
-      }
-
-      const response = products.filter((prod) => {
-        // @ts-ignore Property 'seller' exists but TypeScript doesn't recognize it
+      // Process products - include all products (with or without sellers)
+      const response = products.map((prod) => {
         const reviews = prod.seller?.reviews?.filter((item) => !!item) ?? []
-        return (
-          // @ts-ignore Property 'seller' exists but TypeScript doesn't recognize it
-          prod?.seller && {
-            ...prod,
-            seller: {
-              // @ts-ignore Property 'seller' exists but TypeScript doesn't recognize it
-              ...prod.seller,
-              reviews,
-            },
-          }
-        )
+        return {
+          ...prod,
+          seller: prod.seller ? {
+            ...prod.seller,
+            reviews,
+          } : undefined,
+        }
       })
-
-      // Adjust count to match filtered products (products without sellers are filtered out)
-      const filteredCount = response.length
 
       return {
         response: {
           products: response,
-          count: filteredCount,
+          count: response.length,
         },
         nextPage: nextPage,
         queryParams,
@@ -238,37 +189,8 @@ export const listProductsWithSort = async ({
     ? products.filter((product) => product.seller?.id === seller_id)
     : products
 
-  const pricedProducts = filteredProducts.filter((prod) =>
-    prod.variants?.some((variant) => variant.calculated_price !== null)
-  )
-
-  // Debug: Log products without prices (only in development)
-  if (process.env.NODE_ENV === "development" && category_id) {
-    const productsWithoutPrices = filteredProducts.filter(
-      (prod) => !prod.variants?.some((variant) => variant.calculated_price !== null)
-    )
-    if (productsWithoutPrices.length > 0) {
-      console.log(
-        `[DEBUG] Found ${productsWithoutPrices.length} products without calculated prices in category ${category_id}:`,
-        productsWithoutPrices.map((p) => ({
-          id: p.id,
-          title: p.title,
-          handle: p.handle,
-          variants: p.variants?.map((v) => ({
-            id: v.id,
-            title: v.title,
-            calculated_price: v.calculated_price,
-            prices: v.prices,
-          })),
-        }))
-      )
-    }
-    console.log(
-      `[DEBUG] After filtering: ${filteredProducts.length} products with sellers, ${pricedProducts.length} products with prices`
-    )
-  }
-
-  const sortedProducts = sortProducts(pricedProducts, sortBy)
+  // Include all products - don't filter by price availability
+  const sortedProducts = sortProducts(filteredProducts, sortBy)
 
   const pageParam = (page - 1) * limit
 
