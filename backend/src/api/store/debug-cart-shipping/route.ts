@@ -66,8 +66,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     })
 
     // Call the actual workflow to see what happens
-    let workflowResult = null
-    let workflowError = null
+    let workflowResult: any = null
+    let workflowError: any = null
     try {
       const { result } = await listShippingOptionsForCartWorkflow(req.scope).run({
         input: {
