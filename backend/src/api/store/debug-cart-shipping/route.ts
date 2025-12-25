@@ -1,5 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { Modules, ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { listShippingOptionsForCartWorkflow } from "@medusajs/medusa/core-flows"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const cartId = req.query.cart_id as string
@@ -10,6 +11,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
   const cartModuleService = req.scope.resolve(Modules.CART)
   const fulfillmentModuleService = req.scope.resolve(Modules.FULFILLMENT)
+  const inventoryModuleService = req.scope.resolve(Modules.INVENTORY)
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   const link = req.scope.resolve(ContainerRegistrationKeys.LINK)
 
@@ -53,6 +55,31 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       },
     })
 
+    // Get inventory items for cart items
+    const variantIds = cart.items?.map((i: any) => i.variant_id) || []
+    const { data: inventoryLinks } = await query.graph({
+      entity: "product_variant",
+      fields: ["id", "inventory_items.*", "inventory_items.inventory.location_levels.*"],
+      filters: {
+        id: variantIds,
+      },
+    })
+
+    // Call the actual workflow to see what happens
+    let workflowResult = null
+    let workflowError = null
+    try {
+      const { result } = await listShippingOptionsForCartWorkflow(req.scope).run({
+        input: {
+          cart_id: cartId,
+          is_return: false,
+        },
+      })
+      workflowResult = result
+    } catch (e: any) {
+      workflowError = { message: e.message, stack: e.stack }
+    }
+
     res.json({
       success: true,
       cart: {
@@ -92,6 +119,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
           value: r.value,
         })),
       })),
+      inventory_links: inventoryLinks,
+      workflow_result: workflowResult,
+      workflow_error: workflowError,
     })
   } catch (error: any) {
     res.status(500).json({
