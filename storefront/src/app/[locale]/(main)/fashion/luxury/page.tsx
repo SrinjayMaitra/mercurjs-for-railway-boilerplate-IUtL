@@ -20,9 +20,9 @@ export async function generateMetadata({
   const protocol = headersList.get("x-forwarded-proto") || "https"
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
 
-  const title = "Fashion"
-  const description = `Browse our fashion collection - ${process.env.NEXT_PUBLIC_SITE_NAME || "Storefront"}`
-  const canonical = `${baseUrl}/${locale}/fashion`
+  const title = "Luxury"
+  const description = `Browse our luxury collection - ${process.env.NEXT_PUBLIC_SITE_NAME || "Storefront"}`
+  const canonical = `${baseUrl}/${locale}/fashion/luxury`
 
   return {
     title,
@@ -41,18 +41,15 @@ export async function generateMetadata({
   }
 }
 
-async function FashionPage({
+async function LuxuryPage({
   params,
 }: {
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
 
-  // Find Fashion and Luxury categories by name (case-insensitive)
+  // Find the Luxury category by name (case-insensitive)
   const { categories } = await listCategories({})
-  const fashionCategory = categories.find(
-    (cat) => cat.name?.toLowerCase() === "fashion"
-  )
   const luxuryCategory = categories.find(
     (cat) => cat.name?.toLowerCase() === "luxury"
   )
@@ -61,6 +58,10 @@ async function FashionPage({
     {
       path: "/fashion",
       label: "Fashion",
+    },
+    {
+      path: "/fashion/luxury",
+      label: "Luxury",
     },
   ]
 
@@ -72,66 +73,45 @@ async function FashionPage({
 
       <div className="mb-8">
         <h1 className="text-3xl lg:text-4xl font-semibold text-primary tracking-tight">
-          Fashion
+          Luxury
         </h1>
         <p className="text-secondary mt-2">
-          Discover the latest fashion trends and styles
+          Discover our exclusive luxury collection
         </p>
       </div>
 
       <Suspense fallback={<ProductListingSkeleton />}>
-        <FashionProductListing
+        <LuxuryProductListing
           locale={locale}
-          fashionCategoryId={fashionCategory?.id}
-          luxuryCategoryId={luxuryCategory?.id}
+          categoryId={luxuryCategory?.id}
         />
       </Suspense>
     </main>
   )
 }
 
-async function FashionProductListing({
+async function LuxuryProductListing({
   locale,
-  fashionCategoryId,
-  luxuryCategoryId,
+  categoryId,
 }: {
   locale: string
-  fashionCategoryId?: string
-  luxuryCategoryId?: string
+  categoryId?: string
 }) {
-  // Fetch products from both Fashion and Luxury categories
-  let allProducts: any[] = []
+  let products = []
+  let count = 0
 
-  // Fetch Fashion products
-  if (fashionCategoryId) {
+  if (categoryId) {
     const { response } = await listProducts({
       countryCode: locale,
-      category_id: fashionCategoryId,
+      category_id: categoryId,
       queryParams: {
         limit: 100,
         order: "created_at",
       },
     })
-    allProducts = [...allProducts, ...response.products]
+    products = response.products
+    count = response.count
   }
-
-  // Fetch Luxury products
-  if (luxuryCategoryId) {
-    const { response } = await listProducts({
-      countryCode: locale,
-      category_id: luxuryCategoryId,
-      queryParams: {
-        limit: 100,
-        order: "created_at",
-      },
-    })
-    // Add luxury products, avoiding duplicates
-    const existingIds = new Set(allProducts.map(p => p.id))
-    const newLuxuryProducts = response.products.filter(p => !existingIds.has(p.id))
-    allProducts = [...allProducts, ...newLuxuryProducts]
-  }
-
-  const count = allProducts.length
 
   return (
     <div className="py-6">
@@ -140,18 +120,17 @@ async function FashionProductListing({
           {count} {count === 1 ? "listing" : "listings"}
         </h2>
       </div>
-      {allProducts.length > 0 ? (
+      {products.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
-          <ProductsList products={allProducts} />
+          <ProductsList products={products} />
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-secondary">No fashion products found.</p>
+          <p className="text-secondary">No luxury products found.</p>
         </div>
       )}
     </div>
   )
 }
 
-export default FashionPage
-
+export default LuxuryPage
