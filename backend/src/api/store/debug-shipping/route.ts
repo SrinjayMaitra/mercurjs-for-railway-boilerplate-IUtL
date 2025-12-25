@@ -7,10 +7,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
   try {
-    // Get all shipping options with prices
+    // Get all shipping options with rules and type
     const shippingOptions = await fulfillmentModuleService.listShippingOptions(
       {},
-      { relations: ["rules", "type", "prices"] }
+      { relations: ["rules", "type"] }
     )
 
     // Get all fulfillment sets with service zones
@@ -45,7 +45,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
           shipping_profile_id: opt.shipping_profile_id,
           provider_id: opt.provider_id,
           rules: opt.rules,
-          prices: (opt as any).prices,
           type: (opt as any).type,
         })),
         fulfillment_sets: fulfillmentSets.map(fs => ({
