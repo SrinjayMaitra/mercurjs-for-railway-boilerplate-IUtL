@@ -153,8 +153,9 @@ const CartShippingMethodsSection: React.FC<ShippingProps> = ({
     setError(null)
   }, [isOpen])
 
+  // Group shipping methods by seller, using 'store' for methods without seller_id
   const groupedBySellerId = _shippingMethods?.reduce((acc: any, method) => {
-    const sellerId = method.seller_id!
+    const sellerId = method.seller_id || 'store'
 
     if (!acc[sellerId]) {
       acc[sellerId] = []
@@ -166,12 +167,18 @@ const CartShippingMethodsSection: React.FC<ShippingProps> = ({
         : calculatedPricesMap[method.id]
     )
 
-    if (!isNaN(amount)) {
+    // Include methods with valid amounts OR flat rate methods OR calculated methods
+    if (!isNaN(amount) || method.price_type === "flat" || method.price_type === "calculated") {
       acc[sellerId]?.push(method)
     }
 
     return acc
-  }, {})
+  }, {}) || {}
+
+  // If we have shipping methods but none grouped, add them all to a default 'store' group
+  if (_shippingMethods?.length && Object.keys(groupedBySellerId).length === 0) {
+    groupedBySellerId['store'] = _shippingMethods
+  }
 
   const handleEdit = () => {
     router.replace(pathname + "?step=delivery")
@@ -241,7 +248,7 @@ const CartShippingMethodsSection: React.FC<ShippingProps> = ({
                   return (
                     <div key={key} className="mb-4">
                       <Heading level="h3" className="mb-2">
-                        {groupedBySellerId[key][0].seller_name}
+                        {groupedBySellerId[key][0]?.seller_name || "Store Shipping"}
                       </Heading>
                       <Listbox
                         value={cart.shipping_methods?.[0]?.id}
