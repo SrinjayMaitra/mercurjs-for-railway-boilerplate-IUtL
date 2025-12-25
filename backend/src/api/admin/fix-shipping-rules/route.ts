@@ -26,17 +26,17 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
         if (!hasEnabledRule) {
           newRules.push({
             attribute: "enabled_in_store",
-            value: "true",
+            value: { value: "true" },
             operator: "eq",
-          })
+          } as any)
         }
 
         if (!hasReturnRule) {
           newRules.push({
             attribute: "is_return",
-            value: "false",
+            value: { value: "false" },
             operator: "eq",
-          })
+          } as any)
         }
 
         await fulfillmentModuleService.updateShippingOptions(option.id, {
