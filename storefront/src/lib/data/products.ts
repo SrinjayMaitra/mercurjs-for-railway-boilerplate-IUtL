@@ -91,7 +91,8 @@ export const listProducts = async ({
         collection_id,
         limit,
         offset,
-        region_id: region?.id,
+        // Only filter by region when not filtering by category (products may not have region prices)
+        ...(category_id ? {} : { region_id: region?.id }),
         fields:
           "*variants.calculated_price,+variants.inventory_quantity,*seller,*variants,*seller.products," +
           "*seller.reviews,*seller.reviews.customer,*seller.reviews.seller,*seller.products.variants,*attribute_values,*attribute_values.attribute",
