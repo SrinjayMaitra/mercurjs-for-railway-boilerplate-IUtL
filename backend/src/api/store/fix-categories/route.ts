@@ -13,10 +13,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     res.json({
       success: true,
       categories: categories.map((c: any) => ({
-        id: c.id,
-        name: c.name || "unnamed",
-        handle: c.handle || "no-handle",
-        parent_category_id: c.parent_category_id || null,
+        ...c,
         parent_name: c.parent_category?.name || null,
       })),
     })
