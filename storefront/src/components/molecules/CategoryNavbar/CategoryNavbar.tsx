@@ -3,8 +3,6 @@ import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@/components/molecules/LocalizedLink/LocalizedLink"
 import { cn } from "@/lib/utils"
 import { useParams } from "next/navigation"
-import { CollapseIcon } from "@/icons"
-import { useState } from "react"
 
 export const CategoryNavbar = ({
   categories,
@@ -14,14 +12,10 @@ export const CategoryNavbar = ({
   onClose?: (state: boolean) => void
 }) => {
   const { category } = useParams()
-  const [showFashionDropdown, setShowFashionDropdown] = useState(false)
 
-  // Find Fashion category and its children
-  const fashionCategory = categories?.find(
-    (c) => c.name?.toLowerCase() === "fashion" || c.handle === "fashion"
-  )
-  const fashionChildren = categories?.filter(
-    (c) => c.parent_category_id === fashionCategory?.id
+  // Filter to only show root categories (no parent)
+  const rootCategories = categories?.filter(
+    (c) => c.parent_category_id == null
   ) || []
 
   return (
@@ -35,106 +29,7 @@ export const CategoryNavbar = ({
       >
         All Products
       </LocalizedClientLink>
-      <LocalizedClientLink
-        href="/apparel"
-        onClick={() => (onClose ? onClose(false) : null)}
-        className={cn(
-          "label-md uppercase px-4 my-3 md:my-0 flex items-center justify-between",
-          category === "apparel" && "md:border-b md:border-primary"
-        )}
-      >
-        Apparel
-        <CollapseIcon size={18} className="-rotate-90 md:hidden" />
-      </LocalizedClientLink>
-
-      {/* Fashion with Dropdown */}
-      <div
-        className="relative"
-        onMouseEnter={() => setShowFashionDropdown(true)}
-        onMouseLeave={() => setShowFashionDropdown(false)}
-      >
-        <LocalizedClientLink
-          href="/fashion"
-          onClick={() => (onClose ? onClose(false) : null)}
-          className={cn(
-            "label-md uppercase px-4 my-3 md:my-0 flex items-center justify-between",
-            (category === "fashion" || category === "luxury") && "md:border-b md:border-primary"
-          )}
-        >
-          Fashion
-          <CollapseIcon size={18} className="-rotate-90 md:hidden" />
-        </LocalizedClientLink>
-
-        {/* Dropdown Menu - Dynamic children of Fashion */}
-        <div
-          className={cn(
-            "absolute left-0 top-full pt-2 z-50 hidden md:block",
-            "opacity-0 invisible translate-y-2 transition-all duration-200",
-            showFashionDropdown && "opacity-100 visible translate-y-0"
-          )}
-        >
-          <div className="bg-white shadow-xl rounded-lg border border-neutral-100 p-4 min-w-[180px]">
-            <ul className="space-y-2">
-              <li>
-                <LocalizedClientLink
-                  href="/fashion"
-                  onClick={() => {
-                    setShowFashionDropdown(false)
-                    onClose?.(false)
-                  }}
-                  className="block px-3 py-2 text-base font-medium text-primary hover:text-[#35b9e9] hover:bg-neutral-50 rounded-md transition-colors"
-                >
-                  All Fashion
-                </LocalizedClientLink>
-              </li>
-              {fashionChildren.map((child) => (
-                <li key={child.id}>
-                  <LocalizedClientLink
-                    href={`/fashion/${child.handle}`}
-                    onClick={() => {
-                      setShowFashionDropdown(false)
-                      onClose?.(false)
-                    }}
-                    className="block px-3 py-2 text-base font-medium text-primary hover:text-[#35b9e9] hover:bg-neutral-50 rounded-md transition-colors"
-                  >
-                    {child.name}
-                  </LocalizedClientLink>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <LocalizedClientLink
-        href="/electronics"
-        onClick={() => (onClose ? onClose(false) : null)}
-        className={cn(
-          "label-md uppercase px-4 my-3 md:my-0 flex items-center justify-between",
-          category === "electronics" && "md:border-b md:border-primary"
-        )}
-      >
-        Electronics
-        <CollapseIcon size={18} className="-rotate-90 md:hidden" />
-      </LocalizedClientLink>
-      <LocalizedClientLink
-        href="/home-and-garden"
-        onClick={() => (onClose ? onClose(false) : null)}
-        className={cn(
-          "label-md uppercase px-4 my-3 md:my-0 flex items-center justify-between",
-          category === "home-and-garden" && "md:border-b md:border-primary"
-        )}
-      >
-        Home & Garden
-        <CollapseIcon size={18} className="-rotate-90 md:hidden" />
-      </LocalizedClientLink>
-      {categories?.filter(({ name, parent_category_id }) => {
-        const catName = name?.toLowerCase() || ""
-        // Exclude main nav categories and any child categories (they show in dropdowns)
-        const isMainCategory = catName === "apparel" || catName === "fashion" || catName === "electronics" || catName === "home & garden" || catName === "home and garden"
-        const isChildCategory = parent_category_id != null
-        return !isMainCategory && !isChildCategory
-      }).map(({ id, handle, name }) => (
+      {rootCategories.map(({ id, handle, name }) => (
         <LocalizedClientLink
           key={id}
           href={`/categories/${handle}`}
@@ -145,7 +40,6 @@ export const CategoryNavbar = ({
           )}
         >
           {name}
-          <CollapseIcon size={18} className="-rotate-90 md:hidden" />
         </LocalizedClientLink>
       ))}
     </nav>
