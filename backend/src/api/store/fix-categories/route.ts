@@ -1,19 +1,22 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { Modules } from "@medusajs/framework/utils"
+import { Modules, ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const productModuleService = req.scope.resolve(Modules.PRODUCT)
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
   try {
-    const categories = await productModuleService.listProductCategories(
-      {},
-      { relations: ["parent_category"] }
-    )
+    const { data: categories } = await query.graph({
+      entity: "product_category",
+      fields: ["id", "name", "handle", "parent_category_id", "parent_category.name"],
+    })
 
     res.json({
       success: true,
       categories: categories.map((c: any) => ({
-        ...c,
+        id: c.id,
+        name: c.name,
+        handle: c.handle,
+        parent_category_id: c.parent_category_id,
         parent_name: c.parent_category?.name || null,
       })),
     })
@@ -26,11 +29,15 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 }
 
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   const productModuleService = req.scope.resolve(Modules.PRODUCT)
 
   try {
     // Get all categories
-    const categories = await productModuleService.listProductCategories({})
+    const { data: categories } = await query.graph({
+      entity: "product_category",
+      fields: ["id", "name", "handle", "parent_category_id"],
+    })
 
     // Find Fashion category (parent)
     const fashionCategory = categories.find((c: any) => c.name === "Fashion" || c.handle === "fashion")
