@@ -41,7 +41,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-  const remoteLink = req.scope.resolve(ContainerRegistrationKeys.REMOTE_LINK)
+  const productModuleService = req.scope.resolve(Modules.PRODUCT)
 
   try {
     // Get all categories
@@ -51,16 +51,13 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     })
 
     // Get all products
-    const { data: products } = await query.graph({
-      entity: "product",
-      fields: ["id", "title", "handle"],
-    })
+    const products = await productModuleService.listProducts({})
 
     // Map category names to IDs
     const categoryMap: Record<string, string> = {}
     for (const cat of categories) {
-      categoryMap[cat.name.toLowerCase()] = cat.id
-      categoryMap[cat.handle.toLowerCase()] = cat.id
+      categoryMap[(cat as any).name.toLowerCase()] = (cat as any).id
+      categoryMap[(cat as any).handle.toLowerCase()] = (cat as any).id
     }
 
     // Product to category mapping based on product title
@@ -82,23 +79,18 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
         const categoryId = categoryMap[targetCategoryKey]
 
         try {
-          // Link product to category
-          await remoteLink.create({
-            [Modules.PRODUCT]: {
-              product_id: product.id,
-            },
-            product_category: {
-              product_category_id: categoryId,
-            },
+          // Update product with category using productModuleService
+          await productModuleService.updateProducts(product.id, {
+            categories: [{ id: categoryId }],
           })
 
           results.push({
             product: product.title,
             category: targetCategoryKey,
+            categoryId: categoryId,
             action: "linked",
           })
         } catch (e: any) {
-          // May already be linked
           results.push({
             product: product.title,
             category: targetCategoryKey,
