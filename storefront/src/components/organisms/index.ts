@@ -1,5 +1,4 @@
 import { ProductCard } from "./ProductCard/ProductCard"
-import { DummyProductCard } from "./ProductCard/DummyProductCard"
 import { BrandCard } from "./BrandCard/BrandCard"
 import { CategoryCard } from "./CategoryCard/CategoryCard"
 import { BlogCard } from "./BlogCard/BlogCard"
@@ -28,7 +27,6 @@ import { CartEmpty } from "./CartEmpty/CartEmpty"
 
 export {
   ProductCard,
-  DummyProductCard,
   BrandCard,
   CategoryCard,
   BlogCard,
