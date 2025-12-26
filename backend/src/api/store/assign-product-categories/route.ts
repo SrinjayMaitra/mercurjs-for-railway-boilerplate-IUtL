@@ -81,7 +81,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
         try {
           // Update product with category using productModuleService
           await productModuleService.updateProducts(product.id, {
-            categories: [{ id: categoryId }],
+            category_ids: [categoryId],
           })
 
           results.push({
