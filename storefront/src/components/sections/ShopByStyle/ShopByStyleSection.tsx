@@ -11,28 +11,23 @@ import { useRef } from "react"
 export const styles: Style[] = [
   {
     id: 1,
-    name: "LUXURY",
-    href: "/collections/luxury",
+    name: "VINTAGE",
+    href: "/categories/vintage",
   },
   {
     id: 2,
-    name: "VINTAGE",
-    href: "/collections/vintage",
+    name: "CASUAL",
+    href: "/categories/casual",
   },
   {
     id: 3,
-    name: "CASUAL",
-    href: "/collections/casual",
+    name: "STREETWEAR",
+    href: "/categories/streetwear",
   },
   {
     id: 4,
-    name: "STREETWEAR",
-    href: "/collections/streetwear",
-  },
-  {
-    id: 5,
     name: "Y2K",
-    href: "/collections/y2k",
+    href: "/categories/y2k",
   },
 ]
 
