@@ -139,7 +139,26 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
           continue
         }
 
-        // Create the product
+        // Get or create tags
+        let tagIds: string[] = []
+        if (productData.tags && productData.tags.length > 0) {
+          for (const tagValue of productData.tags) {
+            // Check if tag exists
+            const existingTags = await productModuleService.listProductTags({
+              value: tagValue,
+            })
+            if (existingTags.length > 0) {
+              tagIds.push(existingTags[0].id)
+            } else {
+              const newTag = await productModuleService.createProductTags({
+                value: tagValue,
+              })
+              tagIds.push(newTag.id)
+            }
+          }
+        }
+
+        // Create the product with tags
         const product = await productModuleService.createProducts({
           title: productData.title,
           handle: productData.handle,
@@ -147,13 +166,8 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
           status: productData.status as any,
           options: productData.options,
           variants: productData.variants,
+          tags: tagIds.map((id) => ({ id })),
         })
-
-        // Add tags
-        if (productData.tags && productData.tags.length > 0) {
-          const tagValues = productData.tags.map((t) => ({ value: t }))
-          await productModuleService.createProductTags(tagValues)
-        }
 
         results.push({
           id: product.id,
