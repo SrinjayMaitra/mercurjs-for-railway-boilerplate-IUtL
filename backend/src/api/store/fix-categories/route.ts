@@ -50,7 +50,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     }
 
     // Categories to update (make them children of Fashion)
-    const categoriesToUpdate = ["Vintage", "Casual", "Streetwear", "Y2K"]
+    const categoriesToUpdate = ["Luxury", "Vintage", "Casual", "Streetwear", "Y2K"]
 
     const results: any[] = []
 
