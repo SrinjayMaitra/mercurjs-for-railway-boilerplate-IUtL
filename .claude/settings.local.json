@@ -18,7 +18,9 @@
       "Bash(curl:*)",
       "Bash(python3:*)",
       "Bash(timeout:*)",
-      "Bash(ping:*)"
+      "Bash(ping:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

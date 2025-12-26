@@ -12,22 +12,22 @@ export const styles: Style[] = [
   {
     id: 1,
     name: "VINTAGE",
-    href: "/categories/vintage",
+    href: "/categories",
   },
   {
     id: 2,
     name: "CASUAL",
-    href: "/categories/casual",
+    href: "/categories",
   },
   {
     id: 3,
     name: "STREETWEAR",
-    href: "/categories/streetwear",
+    href: "/categories",
   },
   {
     id: 4,
     name: "Y2K",
-    href: "/categories/y2k",
+    href: "/categories",
   },
 ]
 

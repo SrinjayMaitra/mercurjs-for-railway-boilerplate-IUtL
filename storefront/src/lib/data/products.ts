@@ -87,7 +87,8 @@ export const listProducts = async ({
       method: "GET",
       query: {
         country_code: countryCode,
-        category_id,
+        // Pass category_id as array format for Medusa API
+        ...(category_id ? { "category_id[]": category_id } : {}),
         collection_id,
         limit,
         offset,
