@@ -29,16 +29,27 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const productModuleService = req.scope.resolve(Modules.PRODUCT)
 
+  // Demo product handles to delete (seed data products)
+  const demoHandles = [
+    "shoe",
+    "runningshoe",
+    "jacket",
+    "smart-watch",
+    "hoodie",
+    "silk-satin",
+    "garden-gloves",
+  ]
+
   try {
-    // Get all products with tags
+    // Get all products
     const products = await productModuleService.listProducts(
       {},
       { relations: ["tags"] }
     )
 
-    // Find products with DEMO tag
+    // Find demo products by handle
     const demoProducts = products.filter((p: any) =>
-      p.tags?.some((t: any) => t.value?.toLowerCase() === "demo")
+      demoHandles.includes(p.handle)
     )
 
     const results: any[] = []
