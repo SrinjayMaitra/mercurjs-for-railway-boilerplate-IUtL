@@ -16,6 +16,14 @@ export const CategoryNavbar = ({
   const { category } = useParams()
   const [showFashionDropdown, setShowFashionDropdown] = useState(false)
 
+  // Find Fashion category and its children
+  const fashionCategory = categories?.find(
+    (c) => c.name?.toLowerCase() === "fashion" || c.handle === "fashion"
+  )
+  const fashionChildren = categories?.filter(
+    (c) => c.parent_category_id === fashionCategory?.id
+  ) || []
+
   return (
     <nav className="flex md:items-center flex-col md:flex-row">
       <LocalizedClientLink
@@ -57,7 +65,7 @@ export const CategoryNavbar = ({
           <CollapseIcon size={18} className="-rotate-90 md:hidden" />
         </LocalizedClientLink>
 
-        {/* Dropdown Menu - Simple with just Luxury */}
+        {/* Dropdown Menu - Dynamic children of Fashion */}
         <div
           className={cn(
             "absolute left-0 top-full pt-2 z-50 hidden md:block",
@@ -79,18 +87,20 @@ export const CategoryNavbar = ({
                   All Fashion
                 </LocalizedClientLink>
               </li>
-              <li>
-                <LocalizedClientLink
-                  href="/fashion/luxury"
-                  onClick={() => {
-                    setShowFashionDropdown(false)
-                    onClose?.(false)
-                  }}
-                  className="block px-3 py-2 text-base font-medium text-primary hover:text-[#35b9e9] hover:bg-neutral-50 rounded-md transition-colors"
-                >
-                  Luxury
-                </LocalizedClientLink>
-              </li>
+              {fashionChildren.map((child) => (
+                <li key={child.id}>
+                  <LocalizedClientLink
+                    href={`/fashion/${child.handle}`}
+                    onClick={() => {
+                      setShowFashionDropdown(false)
+                      onClose?.(false)
+                    }}
+                    className="block px-3 py-2 text-base font-medium text-primary hover:text-[#35b9e9] hover:bg-neutral-50 rounded-md transition-colors"
+                  >
+                    {child.name}
+                  </LocalizedClientLink>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -118,9 +128,12 @@ export const CategoryNavbar = ({
         Home & Garden
         <CollapseIcon size={18} className="-rotate-90 md:hidden" />
       </LocalizedClientLink>
-      {categories?.filter(({ name }) => {
+      {categories?.filter(({ name, parent_category_id }) => {
         const catName = name?.toLowerCase() || ""
-        return catName !== "apparel" && catName !== "fashion" && catName !== "electronics" && catName !== "home & garden" && catName !== "home and garden" && catName !== "luxury"
+        // Exclude main nav categories and any child categories (they show in dropdowns)
+        const isMainCategory = catName === "apparel" || catName === "fashion" || catName === "electronics" || catName === "home & garden" || catName === "home and garden"
+        const isChildCategory = parent_category_id != null
+        return !isMainCategory && !isChildCategory
       }).map(({ id, handle, name }) => (
         <LocalizedClientLink
           key={id}

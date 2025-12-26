@@ -35,9 +35,8 @@ export const listCategories = async ({
   )
 
   return {
-    categories: childrenCategories.filter(
-      ({ parent_category_id }) => !parent_category_id
-    ),
+    // Return ALL categories so navbar can build dropdowns with children
+    categories: childrenCategories,
     parentCategories: parentCategories,
   }
 }
