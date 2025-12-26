@@ -48,13 +48,15 @@ async function FashionPage({
 }) {
   const { locale } = await params
 
-  // Find Fashion and Luxury categories by name (case-insensitive)
+  // Find Fashion category and all its children
   const { categories } = await listCategories({})
   const fashionCategory = categories.find(
     (cat) => cat.name?.toLowerCase() === "fashion"
   )
-  const luxuryCategory = categories.find(
-    (cat) => cat.name?.toLowerCase() === "luxury"
+
+  // Get all child categories of Fashion
+  const childCategories = categories.filter(
+    (cat) => cat.parent_category_id === fashionCategory?.id
   )
 
   const breadcrumbsItems = [
@@ -79,13 +81,47 @@ async function FashionPage({
         </p>
       </div>
 
-      <Suspense fallback={<ProductListingSkeleton />}>
-        <FashionProductListing
-          locale={locale}
-          fashionCategoryId={fashionCategory?.id}
-          luxuryCategoryId={luxuryCategory?.id}
-        />
-      </Suspense>
+      <div className="flex gap-8">
+        {/* Sidebar with subcategories */}
+        {childCategories.length > 0 && (
+          <aside className="hidden lg:block w-48 flex-shrink-0">
+            <nav className="sticky top-24">
+              <h3 className="font-semibold text-primary mb-4">Categories</h3>
+              <ul className="space-y-2">
+                <li>
+                  <a
+                    href="/fashion"
+                    className="text-primary font-medium hover:text-[#35b9e9] transition-colors"
+                  >
+                    All Fashion
+                  </a>
+                </li>
+                {childCategories.map((cat) => (
+                  <li key={cat.id}>
+                    <a
+                      href={`/fashion/${cat.handle}`}
+                      className="text-secondary hover:text-[#35b9e9] transition-colors"
+                    >
+                      {cat.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )}
+
+        {/* Products */}
+        <div className="flex-1">
+          <Suspense fallback={<ProductListingSkeleton />}>
+            <FashionProductListing
+              locale={locale}
+              fashionCategoryId={fashionCategory?.id}
+              childCategoryIds={childCategories.map((c) => c.id)}
+            />
+          </Suspense>
+        </div>
+      </div>
     </main>
   )
 }
@@ -93,14 +129,15 @@ async function FashionPage({
 async function FashionProductListing({
   locale,
   fashionCategoryId,
-  luxuryCategoryId,
+  childCategoryIds,
 }: {
   locale: string
   fashionCategoryId?: string
-  luxuryCategoryId?: string
+  childCategoryIds: string[]
 }) {
-  // Fetch products from both Fashion and Luxury categories
+  // Fetch products from Fashion and all child categories
   let allProducts: any[] = []
+  const existingIds = new Set<string>()
 
   // Fetch Fashion products
   if (fashionCategoryId) {
@@ -112,23 +149,30 @@ async function FashionProductListing({
         order: "created_at",
       },
     })
-    allProducts = [...allProducts, ...response.products]
+    response.products.forEach((p: any) => {
+      if (!existingIds.has(p.id)) {
+        existingIds.add(p.id)
+        allProducts.push(p)
+      }
+    })
   }
 
-  // Fetch Luxury products
-  if (luxuryCategoryId) {
+  // Fetch products from all child categories
+  for (const categoryId of childCategoryIds) {
     const { response } = await listProducts({
       countryCode: locale,
-      category_id: luxuryCategoryId,
+      category_id: categoryId,
       queryParams: {
         limit: 100,
         order: "created_at",
       },
     })
-    // Add luxury products, avoiding duplicates
-    const existingIds = new Set(allProducts.map(p => p.id))
-    const newLuxuryProducts = response.products.filter(p => !existingIds.has(p.id))
-    allProducts = [...allProducts, ...newLuxuryProducts]
+    response.products.forEach((p: any) => {
+      if (!existingIds.has(p.id)) {
+        existingIds.add(p.id)
+        allProducts.push(p)
+      }
+    })
   }
 
   const count = allProducts.length
